@@ -4,6 +4,7 @@ import com.krontech.backend.dto.request.LanguageCreateRequest;
 import com.krontech.backend.dto.request.LanguageUpdateRequest;
 import com.krontech.backend.dto.response.LanguageResponse;
 import com.krontech.backend.entity.Language;
+import com.krontech.backend.exception.ResourceNotFoundException;
 import com.krontech.backend.repository.LanguageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -64,7 +65,7 @@ public class LanguageService {
     // ID'ye göre dil bul (Response DTO döner)
     public LanguageResponse getLanguageById(UUID id) {
         Language language = languageRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Dil bulunamadı! ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Dil bulunamadı! ID: " + id));
         return mapToResponse(language);
     }
 

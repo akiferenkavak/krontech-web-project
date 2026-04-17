@@ -1,5 +1,6 @@
 package com.krontech.backend.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -12,6 +13,7 @@ public record LanguageCreateRequest(
         @NotBlank(message = "Dil adı boş olamaz")
         String name,
 
+        @JsonProperty("isDefault")
         boolean isDefault
 ) {
 }
