@@ -20,28 +20,25 @@ public class LanguageService {
 
     private final LanguageRepository languageRepository;
 
-    // Tüm dilleri getir (Artık Entity değil, Response DTO dönüyor)
+    // Tüm dilleri getir
     public List<LanguageResponse> getAllLanguages() {
         return languageRepository.findAll()
                 .stream()
-                .map(this::mapToResponse) // Her bir Entity'yi DTO'ya çevir
+                .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-    // Yeni dil ekle (Artık Entity değil, Request DTO alıyor)
+    // Yeni dil ekle
     @Transactional
     public LanguageResponse createLanguage(LanguageCreateRequest request) {
-        // 1. İş Kuralı: Bu dil kodu zaten var mı?
         if (languageRepository.findByCode(request.code()).isPresent()) {
             throw new IllegalArgumentException("Bu dil kodu zaten kullanımda: " + request.code());
         }
 
-        // 2. İş Kuralı: Eğer bu dil varsayılan (default) olarak ekleniyorsa, diğerinin default özelliğini kaldır
         if (request.isDefault()) {
             removeCurrentDefaultLanguage();
         }
 
-        // DTO'yu Entity'ye çevir ve kaydet
         Language language = Language.builder()
                 .code(request.code())
                 .name(request.name())
@@ -49,8 +46,6 @@ public class LanguageService {
                 .build();
 
         Language savedLanguage = languageRepository.save(language);
-
-        // Kaydedilen Entity'yi Response DTO'ya çevirip döndür
         return mapToResponse(savedLanguage);
     }
 
@@ -62,7 +57,7 @@ public class LanguageService {
         });
     }
 
-    // ID'ye göre dil bul (Response DTO döner)
+    // ID'ye göre dil bul
     public LanguageResponse getLanguageById(UUID id) {
         Language language = languageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Dil bulunamadı! ID: " + id));
@@ -73,20 +68,18 @@ public class LanguageService {
     @Transactional
     public LanguageResponse updateLanguage(UUID id, LanguageUpdateRequest request) {
         Language existingLanguage = languageRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Güncellenecek dil bulunamadı! ID: " + id));
+                // BURASI GÜNCELLENDİ
+                .orElseThrow(() -> new ResourceNotFoundException("Güncellenecek dil bulunamadı! ID: " + id));
 
-        // İş Kuralı: Eğer dil kodu değişiyorsa ve yeni kod başka bir dilde kullanılıyorsa hata ver
         if (!existingLanguage.getCode().equals(request.code()) &&
                 languageRepository.findByCode(request.code()).isPresent()) {
             throw new IllegalArgumentException("Bu dil kodu başka bir dil tarafından kullanılıyor: " + request.code());
         }
 
-        // İş Kuralı: Eğer bu dil varsayılan yapılıyorsa, mevcut varsayılanı kaldır
         if (request.isDefault() && !existingLanguage.isDefault()) {
             removeCurrentDefaultLanguage();
         }
 
-        // Verileri güncelle
         existingLanguage.setCode(request.code());
         existingLanguage.setName(request.name());
         existingLanguage.setDefault(request.isDefault());
@@ -99,17 +92,15 @@ public class LanguageService {
     @Transactional
     public void deleteLanguage(UUID id) {
         Language language = languageRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Silinecek dil bulunamadı! ID: " + id));
+                // BURASI GÜNCELLENDİ
+                .orElseThrow(() -> new ResourceNotFoundException("Silinecek dil bulunamadı! ID: " + id));
 
-        // ÖNEMLİ: Varsayılan dili silmeyi engelleyebiliriz (Sistem çökmesin diye)
         if (language.isDefault()) {
             throw new IllegalStateException("Varsayılan dil silinemez! Önce başka bir dili varsayılan yapın.");
         }
 
         languageRepository.delete(language);
     }
-
-
 
     // --- YARDIMCI DÖNÜŞÜM METODU (MAPPER) ---
     private LanguageResponse mapToResponse(Language language) {
@@ -120,6 +111,4 @@ public class LanguageService {
                 language.isDefault()
         );
     }
-
-
 }
