@@ -55,11 +55,12 @@ export interface ProductDetail {
 export interface BlogPostSummary {
   id: string;
   slug: string;
-  title: string;
+  title: string | null;
   excerpt: string | null;
-  coverImageUrl: string | null;
-  publishedAt: string;
-  tags: string[];
+  featuredImageUrl: string | null;
+  authorName: string | null;
+  tags: { id: string; slug: string }[];
+  publishedAt: string | null;
 }
 
 export interface BlogPostDetail extends BlogPostSummary {
