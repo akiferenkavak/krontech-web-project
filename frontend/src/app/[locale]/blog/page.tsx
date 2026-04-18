@@ -1,6 +1,28 @@
 import Link from 'next/link';
 import { type Locale } from '@/i18n/config';
 import { getBlogPosts, type BlogPostSummary } from '@/lib/api';
+import type { Metadata } from 'next';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: locale === 'tr' ? 'Blog' : 'Blog',
+    description: locale === 'tr'
+      ? 'Siber güvenlik ve teknoloji dünyasından güncel içerikler.'
+      : 'Latest insights from the world of cybersecurity and technology.',
+    alternates: {
+      languages: {
+        'tr': 'https://krontech.com/tr/blog',
+        'en': 'https://krontech.com/en/blog',
+      },
+    },
+  };
+}
+
 
 const t = {
   tr: {

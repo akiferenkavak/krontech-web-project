@@ -1,5 +1,28 @@
 import Link from 'next/link';
 import { type Locale } from '@/i18n/config';
+import type { Metadata } from 'next';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: locale === 'tr' ? 'Kaynaklar' : 'Resources',
+    description: locale === 'tr'
+      ? 'Teknik dokümanlar, vaka çalışmaları ve rehberler.'
+      : 'Technical documents, case studies and guides.',
+    alternates: {
+      languages: {
+        'tr': 'https://krontech.com/tr/resources',
+        'en': 'https://krontech.com/en/resources',
+      },
+    },
+  };
+}
+
+
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080/api/v1';
 

@@ -1,6 +1,34 @@
 import Link from 'next/link';
 import { type Locale } from '@/i18n/config';
 import { getProducts, type ProductSummary } from '@/lib/api';
+import type { Metadata } from 'next';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return {
+    title: locale === 'tr'
+      ? 'Kron — Siber Güvenlik ve Telekom Çözümleri'
+      : 'Kron — Cybersecurity & Telecom Solutions',
+    description: locale === 'tr'
+      ? 'Kurumsal altyapınızı güçlendiren, ölçeklenebilir ve güvenilir teknoloji platformları.'
+      : 'Scalable, reliable technology platforms that strengthen your corporate infrastructure.',
+    openGraph: {
+      title: locale === 'tr' ? 'Kron — Siber Güvenlik' : 'Kron — Cybersecurity',
+      description: locale === 'tr'
+        ? 'PAM, Veri Güvenliği ve Telekom çözümleri.'
+        : 'PAM, Data Security and Telecom solutions.',
+      url: `https://krontech.com/${locale}`,
+      siteName: 'Kron',
+      locale: locale === 'tr' ? 'tr_TR' : 'en_US',
+      type: 'website',
+    },
+  };
+}
 
 const t = {
   tr: {

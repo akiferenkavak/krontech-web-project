@@ -1,6 +1,46 @@
 import Link from 'next/link';
 import { type Locale } from '@/i18n/config';
 import { getProductBySlug, type ProductDetail } from '@/lib/api';
+import type { Metadata } from 'next';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+
+  try {
+    const product = await getProductBySlug(slug, locale);
+    const translation = product.translations?.find(
+      (t) => t.languageCode === locale
+    );
+
+    const title = translation?.seoTitle ?? translation?.title ?? slug;
+    const description = translation?.seoDescription ?? translation?.shortDescription ?? '';
+
+    return {
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        url: `https://krontech.com/${locale}/products/${slug}`,
+        siteName: 'Kron',
+        locale: locale === 'tr' ? 'tr_TR' : 'en_US',
+        type: 'website',
+      },
+      alternates: {
+        languages: {
+          'tr': `https://krontech.com/tr/products/${slug}`,
+          'en': `https://krontech.com/en/products/${slug}`,
+        },
+      },
+    };
+  } catch {
+    return { title: slug };
+  }
+}
 
 const t = {
   tr: {
@@ -53,8 +93,34 @@ export default async function ProductDetailPage({
     (t) => t.languageCode === locale
   );
 
+  const jsonLd = translation ? {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    'name': translation.title,
+    'description': translation.shortDescription ?? '',
+    'applicationCategory': 'SecurityApplication',
+    'operatingSystem': 'Web',
+    'offers': {
+      '@type': 'Offer',
+      'seller': {
+        '@type': 'Organization',
+        'name': 'Kron',
+        'url': 'https://krontech.com',
+      },
+    },
+  } : null;
+
   return (
     <main className="max-w-7xl mx-auto px-6 py-16">
+
+      {/* JSON-LD */}
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+
       {/* Geri butonu */}
       <Link href={`/${locale}/products`} className="text-sm text-blue-600 hover:underline">
         {copy.back}

@@ -1,5 +1,28 @@
 import Link from 'next/link';
 import { getProducts } from '@/lib/api';
+import type { Metadata } from 'next';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: locale === 'tr' ? 'Ürünler' : 'Products',
+    description: locale === 'tr'
+      ? 'Siber güvenlik ve telekom yazılım ürünlerimiz.'
+      : 'Our cybersecurity and telecom software products.',
+    alternates: {
+      languages: {
+        'tr': 'https://krontech.com/tr/products',
+        'en': 'https://krontech.com/en/products',
+      },
+    },
+  };
+}
+
+
 
 export default async function ProductsPage({
   params,
