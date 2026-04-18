@@ -7,11 +7,17 @@ const t = {
     back: '← Ürünlere Dön',
     notFound: 'Ürün bulunamadı.',
     noContent: 'Bu ürün için henüz içerik eklenmemiş.',
+    requestDemo: 'Demo Talep Et',
+    downloadDatasheet: 'Datasheet İndir',
+    subProducts: 'Alt Ürünler',
   },
   en: {
     back: '← Back to Products',
     notFound: 'Product not found.',
     noContent: 'No content available for this product yet.',
+    requestDemo: 'Request a Demo',
+    downloadDatasheet: 'Download Datasheet',
+    subProducts: 'Sub Products',
   },
 };
 
@@ -67,6 +73,29 @@ export default async function ProductDetailPage({
             {translation.shortDescription}
           </p>
         )}
+
+        {/* CTA Butonları */}
+        <div className="mt-8 flex flex-wrap gap-4">
+          <Link
+            href={`/${locale}/request-demo?product=${product.slug}`}
+            className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-800 transition-colors"
+          >
+            {copy.requestDemo}
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
+
+          <button
+            disabled
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-6 py-3 text-sm font-semibold text-gray-500 cursor-not-allowed opacity-60"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            {copy.downloadDatasheet}
+          </button>
+        </div>
       </div>
 
       {/* İçerik */}
@@ -83,7 +112,7 @@ export default async function ProductDetailPage({
       {product.children && product.children.length > 0 && (
         <section className="mt-16">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            {locale === 'tr' ? 'Alt Ürünler' : 'Sub Products'}
+            {copy.subProducts}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {product.children.map((child) => (

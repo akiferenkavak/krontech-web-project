@@ -94,6 +94,27 @@ export interface PagedResponse<T> {
   last: boolean;
 }
 
+export interface ResourceSummary {
+  id: string;
+  slug: string;
+  type: string;
+  title: string;
+  description: string | null;
+  fileUrl: string | null;
+  featuredImageUrl: string | null;
+  relatedProductSlug: string | null;
+  relatedProductTitle: string | null;
+}
+
+export async function getResources(lang: string, type?: string): Promise<ResourceSummary[]> {
+  const url = type
+    ? `${API_BASE}/resources?lang=${lang}&type=${type}`
+    : `${API_BASE}/resources?lang=${lang}`;
+  const res = await fetch(url, { next: { revalidate: 3600 } });
+  if (!res.ok) return [];
+  return res.json();
+}
+
 // ---------- Products ----------
 
 export function getProducts(locale: string): Promise<ProductSummary[]> {

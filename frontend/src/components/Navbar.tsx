@@ -6,7 +6,7 @@ import { type Locale, locales } from '@/i18n/config';
 
 const navLinks = [
   { key: 'products',  href: '/products',  label: { tr: 'Ürünler',      en: 'Products'  } },
-  { key: 'sectors',   href: '/sectors',   label: { tr: 'Sektörler',    en: 'Sectors'   } },
+  { key: 'solutions', href: '/solutions', label: { tr: 'Çözümler',     en: 'Solutions' } },
   { key: 'partners',  href: '/partners',  label: { tr: 'İş Ortaklığı', en: 'Partners'  } },
   { key: 'resources', href: '/resources', label: { tr: 'Kaynaklar',    en: 'Resources' } },
   { key: 'about',     href: '/about',     label: { tr: 'Hakkımızda',   en: 'About'     } },
