@@ -23,20 +23,24 @@ public class ProductController {
 
     // Tüm ürünler (özet)
     @GetMapping
-    public ResponseEntity<List<ProductSummaryResponse>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public ResponseEntity<List<ProductSummaryResponse>> getAllProducts(
+            @RequestParam(defaultValue = "en") String lang) {
+        return ResponseEntity.ok(productService.getAllProducts(lang));
     }
 
     // Sadece üst seviye kategoriler
     @GetMapping("/roots")
-    public ResponseEntity<List<ProductSummaryResponse>> getRootProducts() {
-        return ResponseEntity.ok(productService.getRootProducts());
+    public ResponseEntity<List<ProductSummaryResponse>> getRootProducts(
+            @RequestParam(defaultValue = "en") String lang) {
+        return ResponseEntity.ok(productService.getRootProducts(lang));
     }
 
     // Belirli bir ürünün alt ürünleri
     @GetMapping("/{id}/children")
-    public ResponseEntity<List<ProductSummaryResponse>> getChildProducts(@PathVariable UUID id) {
-        return ResponseEntity.ok(productService.getChildProducts(id));
+    public ResponseEntity<List<ProductSummaryResponse>> getChildProducts(
+            @PathVariable UUID id,
+            @RequestParam(defaultValue = "en") String lang) {
+        return ResponseEntity.ok(productService.getChildProducts(id, lang));
     }
 
     // ID ile detay

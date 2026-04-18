@@ -32,4 +32,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     @Query("SELECT p FROM Product p LEFT JOIN FETCH p.translations t LEFT JOIN FETCH t.language WHERE p.id = :id")
     Optional<Product> findByIdWithTranslations(@Param("id") UUID id);
+
+    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.translations t LEFT JOIN FETCH t.language")
+    List<Product> findAllWithTranslations();
 }

@@ -27,32 +27,31 @@ public class ProductService {
 
     // --- Tüm ürünleri liste olarak getir (hafif DTO) ---
     @Transactional(readOnly = true)
-    public List<ProductSummaryResponse> getAllProducts() {
+    public List<ProductSummaryResponse> getAllProducts(String langCode) {
         return productRepository.findAll()
                 .stream()
-                .map(this::mapToSummary)
+                .map(p -> mapToSummary(p, langCode))
                 .toList();
     }
 
     // --- Sadece üst seviye kategorileri getir ---
     @Transactional(readOnly = true)
-    public List<ProductSummaryResponse> getRootProducts() {
+    public List<ProductSummaryResponse> getRootProducts(String langCode) {
         return productRepository.findByParentIsNullAndIsActiveTrue()
                 .stream()
-                .map(this::mapToSummary)
+                .map(p -> mapToSummary(p, langCode))
                 .toList();
     }
 
     // --- Belirli bir kategorinin alt ürünleri ---
     @Transactional(readOnly = true)
-    public List<ProductSummaryResponse> getChildProducts(UUID parentId) {
-        // Önce parent'ın varlığını kontrol et
+    public List<ProductSummaryResponse> getChildProducts(UUID parentId, String langCode) {
         if (!productRepository.existsById(parentId)) {
             throw new ResourceNotFoundException("Ürün bulunamadı! ID: " + parentId);
         }
         return productRepository.findByParentIdAndIsActiveTrue(parentId)
                 .stream()
-                .map(this::mapToSummary)
+                .map(p -> mapToSummary(p, langCode))
                 .toList();
     }
 
@@ -203,7 +202,12 @@ public class ProductService {
 
     // --- MAPPER'LAR ---
 
-    private ProductSummaryResponse mapToSummary(Product product) {
+    private ProductSummaryResponse mapToSummary(Product product, String langCode) {
+        ProductTranslation translation = product.getTranslations().stream()
+                .filter(t -> t.getLanguage().getCode().equals(langCode))
+                .findFirst()
+                .orElse(null);
+
         return new ProductSummaryResponse(
                 product.getId(),
                 product.getSlug(),
@@ -211,7 +215,9 @@ public class ProductService {
                 product.isActive(),
                 product.getSortOrder(),
                 product.getParent() != null ? product.getParent().getId() : null,
-                product.getFeaturedImage() != null ? product.getFeaturedImage().getUrl() : null
+                product.getFeaturedImage() != null ? product.getFeaturedImage().getUrl() : null,
+                translation != null ? translation.getTitle() : null,
+                translation != null ? translation.getShortDescription() : null
         );
     }
 

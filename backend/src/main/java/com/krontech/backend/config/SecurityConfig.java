@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/blog-posts/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/languages/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/forms/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/resources/**").permitAll()
 
                 // --- PUBLIC: Form submit ---
                 .requestMatchers(HttpMethod.POST, "/api/v1/forms/submit").permitAll()
