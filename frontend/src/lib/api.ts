@@ -27,10 +27,28 @@ export interface ProductSummary {
   shortDescription: string | null;
 }
 
-export interface ProductDetail extends ProductSummary {
-  description: string | null;
-  metaTitle: string | null;
-  metaDescription: string | null;
+export interface ProductTranslation {
+  id: string;
+  languageCode: string;
+  languageName: string;
+  title: string;
+  shortDescription: string | null;
+  content: string | null;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  status: string;
+  publishedAt: string | null;
+}
+
+export interface ProductDetail {
+  id: string;
+  slug: string;
+  category: string;
+  isActive: boolean;
+  sortOrder: number;
+  parentId: string | null;
+  featuredImageUrl: string | null;
+  translations: ProductTranslation[];
   children: ProductSummary[];
 }
 
@@ -66,7 +84,7 @@ export function getProducts(locale: string): Promise<ProductSummary[]> {
 }
 
 export function getProductBySlug(slug: string, locale: string): Promise<ProductDetail> {
-  return apiFetch(`/products/${slug}?lang=${locale}`);
+  return apiFetch(`/products/slug/${slug}?lang=${locale}`);
 }
 
 // ---------- Blog ----------
