@@ -18,10 +18,13 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
 export interface ProductSummary {
   id: string;
   slug: string;
-  name: string;
-  summary: string | null;
-  coverImageUrl: string | null;
+  category: string;
+  isActive: boolean;
+  sortOrder: number;
   parentId: string | null;
+  featuredImageUrl: string | null;
+  title: string | null;
+  shortDescription: string | null;
 }
 
 export interface ProductDetail extends ProductSummary {
