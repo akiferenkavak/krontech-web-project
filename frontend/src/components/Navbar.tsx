@@ -1,16 +1,21 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { type Locale, locales } from '@/i18n/config';
 
 const navLinks = [
-  { key: 'products',  href: '/products',  label: { tr: 'Ürünler',  en: 'Products'  } },
-  { key: 'sectors',   href: '/sectors',   label: { tr: 'Sektörler', en: 'Sectors'   } },
-  { key: 'partners',  href: '/partners',  label: { tr: 'İş Ortaklığı', en: 'Partners' } },
-  { key: 'resources', href: '/resources', label: { tr: 'Kaynaklar', en: 'Resources' } },
-  { key: 'about',     href: '/about',     label: { tr: 'Hakkımızda', en: 'About'    } },
-  { key: 'contact',   href: '/contact',   label: { tr: 'İletişim',  en: 'Contact'   } },
+  { key: 'products',  href: '/products',  label: { tr: 'Ürünler',      en: 'Products'  } },
+  { key: 'sectors',   href: '/sectors',   label: { tr: 'Sektörler',    en: 'Sectors'   } },
+  { key: 'partners',  href: '/partners',  label: { tr: 'İş Ortaklığı', en: 'Partners'  } },
+  { key: 'resources', href: '/resources', label: { tr: 'Kaynaklar',    en: 'Resources' } },
+  { key: 'about',     href: '/about',     label: { tr: 'Hakkımızda',   en: 'About'     } },
+  { key: 'contact',   href: '/contact',   label: { tr: 'İletişim',     en: 'Contact'   } },
 ];
 
 export default function Navbar({ locale }: { locale: Locale }) {
+  const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
@@ -54,7 +59,7 @@ export default function Navbar({ locale }: { locale: Locale }) {
               <span key={l} className="flex items-center gap-1">
                 {i > 0 && <span className="text-gray-300 text-xs">|</span>}
                 <Link
-                  href={`/${l}`}
+                  href={`/${l}${pathname.replace(/^\/(tr|en)/, '')}`}
                   className={
                     l === locale
                       ? 'font-semibold text-blue-700'

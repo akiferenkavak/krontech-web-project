@@ -63,10 +63,26 @@ export interface BlogPostSummary {
   publishedAt: string | null;
 }
 
-export interface BlogPostDetail extends BlogPostSummary {
-  body: string;
-  metaTitle: string | null;
-  metaDescription: string | null;
+export interface BlogPostTranslation {
+  id: string;
+  languageCode: string;
+  languageName: string;
+  title: string;
+  excerpt: string | null;
+  content: string | null;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  status: string;
+  publishedAt: string | null;
+}
+
+export interface BlogPostDetail {
+  id: string;
+  slug: string;
+  featuredImageUrl: string | null;
+  authorName: string | null;
+  tags: { id: string; slug: string }[];
+  translations: BlogPostTranslation[];
 }
 
 export interface PagedResponse<T> {
@@ -99,5 +115,5 @@ export function getBlogPosts(
 }
 
 export function getBlogPostBySlug(slug: string, locale: string): Promise<BlogPostDetail> {
-  return apiFetch(`/blog-posts/${slug}?lang=${locale}`);
+  return apiFetch(`/blog-posts/slug/${slug}`);
 }
