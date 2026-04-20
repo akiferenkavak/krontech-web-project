@@ -3,7 +3,7 @@ import { type Locale } from '@/i18n/config';
 import { getProducts, getBlogPosts, type ProductSummary, type BlogPostSummary } from '@/lib/api';
 import type { Metadata } from 'next';
 import HeroSlider from '@/components/HeroSlider';
-
+import ProductCatalog from '@/components/ProductCatalog';
 
 export async function generateMetadata({
   params,
@@ -88,46 +88,7 @@ return (
       <HeroSlider locale={locale} />
 
       {/* ===== ÜRÜNLER — beyaz arka plan ===== */}
-      <section className="bg-gray-50 py-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">{copy.productsTitle}</h2>
-            <p className="text-gray-500">{copy.productsSub}</p>
-          </div>
-
-          {products.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product) => (
-                <Link
-                  key={product.id}
-                  href={`/${locale}/products/${product.slug}`}
-                  className="group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg hover:border-blue-300 transition-all duration-300"
-                >
-                  <div className="h-40 flex items-center justify-center text-white font-bold text-xl"
-                    style={{ background: 'linear-gradient(135deg, #1a2f6e, #2563eb)' }}>
-                    <span className="text-4xl font-black opacity-30">
-                      {product.category?.substring(0, 3).toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="font-bold text-gray-900 mb-2 text-lg group-hover:text-blue-600 transition-colors">
-                      {product.title ?? product.slug}
-                    </h3>
-                    {product.shortDescription && (
-                      <p className="text-sm text-gray-500 mb-4 line-clamp-2">
-                        {product.shortDescription}
-                      </p>
-                    )}
-                    <span className="text-blue-600 text-sm font-semibold">
-                      {copy.learnMore} →
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+      <ProductCatalog locale={locale} products={products} />
 
       {/* ===== KRON RAKAMLARLA ===== */}
       <section className="bg-white py-16">
