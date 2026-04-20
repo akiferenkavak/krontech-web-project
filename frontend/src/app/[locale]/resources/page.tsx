@@ -115,9 +115,10 @@ export default async function ResourcesPage({
     <main className="max-w-7xl mx-auto px-6 py-16">
       {/* Başlık */}
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-gray-900">{copy.title}</h1>
-        <p className="mt-3 text-lg text-gray-500">{copy.subtitle}</p>
-      </div>
+            <h1 className="text-4xl font-bold text-white mb-3">{copy.title}</h1>
+             <p className="text-lg mb-4" style={{ color: 'rgba(255,255,255,0.5)' }}>{copy.subtitle}</p>
+             <div className="w-12 h-1 rounded-full" style={{ background: 'linear-gradient(90deg, #2563eb, #60a5fa)' }} />
+        </div>
 
       {/* Filtre tabları */}
       <div className="flex gap-2 mb-10 flex-wrap">
@@ -150,8 +151,12 @@ export default async function ResourcesPage({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {resources.map((resource) => (
             <div
-              key={resource.id}
-              className="flex flex-col rounded-xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
+            key={resource.id}
+            className="flex flex-col rounded-xl p-6 transition-all duration-300 border"
+            style={{
+                backgroundColor: 'rgba(255,255,255,0.03)',
+                borderColor: 'rgba(255,255,255,0.08)',
+            }}
             >
               {/* Tip badge */}
               <span className={`self-start text-xs font-semibold px-2 py-1 rounded-full mb-4 ${
@@ -161,13 +166,13 @@ export default async function ResourcesPage({
               </span>
 
               {/* Başlık */}
-              <h3 className="font-semibold text-gray-900 mb-2 leading-snug">
+              <h3 className="font-semibold text-white mb-2 leading-snug">
                 {resource.title}
               </h3>
 
               {/* Açıklama */}
               {resource.description && (
-                <p className="text-sm text-gray-500 line-clamp-3 mb-4 flex-1">
+                <p className="text-sm line-clamp-3 mb-4 flex-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
                   {resource.description}
                 </p>
               )}
