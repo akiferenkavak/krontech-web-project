@@ -4,6 +4,8 @@ import { getProducts, getBlogPosts, type ProductSummary, type BlogPostSummary } 
 import type { Metadata } from 'next';
 import HeroSlider from '@/components/HeroSlider';
 import ProductCatalog from '@/components/ProductCatalog';
+import BlogSlider from '@/components/BlogSlider';
+
 
 export async function generateMetadata({
   params,
@@ -36,6 +38,9 @@ const t = {
     heroDemo: 'Demo Talep Et',
     productsTitle: 'Kron Ürünleri',
     productsSub: "Kron'un öncü teknoloji ve siber güvenlik yazılım ürünleri",
+    whyKronTitle: 'Neden Kron',
+    whyKronDesc: 'Kron, BT erişim kontrol sistemleri, servis aktivasyonu ve siber güvenlik alanlarındaki son teknoloji yazılım ürünleriyle işletmenize değer katar.',
+    whyKronCta: 'Daha Fazla',
     statsTitle: 'Kron Rakamlarla',
     statsSub: '18 yıllık deneyim, yüzlerce proje...',
     blogTitle: 'Güncel Kalın',
@@ -50,6 +55,9 @@ const t = {
     heroDemo: 'Request Demo',
     productsTitle: 'Kron Products',
     productsSub: "Kron's cutting edge technology and cyber security software products",
+    whyKronTitle: 'Why Kron',
+    whyKronDesc: 'Kron adds value to your business with its cutting edge software products in the ICT access control systems, service activation and cyber security fields.',
+    whyKronCta: 'Learn More',
     statsTitle: 'Kron in Numbers',
     statsSub: '18 years of experience, hundreds of projects...',
     blogTitle: 'Keep up to Date',
@@ -90,72 +98,85 @@ return (
       {/* ===== ÜRÜNLER — beyaz arka plan ===== */}
       <ProductCatalog locale={locale} products={products} />
 
+      {/* ===== WHY KRON ===== */}
+<section
+  className="py-16"
+  style={{
+    backgroundImage: `url('https://krontech.com/_upload/backgroundimages/analysts-back.png')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  }}
+>
+  <div className="max-w-7xl mx-auto px-6">
+    <div className="flex flex-col md:flex-row items-center gap-8">
+
+      {/* Sol — beyaz kutu */}
+      <div className="w-full md:w-7/12 bg-white p-10">
+        <h2 className="text-3xl font-bold text-gray-900 mb-6">
+          {copy.whyKronTitle}<b>?</b>
+        </h2>
+        <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+          {copy.whyKronDesc}
+        </p>
+        <Link
+          href={`/${locale}/about`}
+          className="inline-block border border-blue-600 text-blue-600 px-6 py-2 text-sm font-medium hover:bg-blue-600 hover:text-white transition-colors"
+        >
+          {copy.whyKronCta}
+        </Link>
+      </div>
+
+      {/* Sağ — analist görseli */}
+      <div className="w-full md:w-5/12 flex justify-center">
+        <img
+          src="https://krontech.com/_upload/descriptioncontentimages2/analysts5_1.png"
+          alt="Industry Analysts"
+          className="w-full max-w-sm"
+        />
+      </div>
+
+    </div>
+  </div>
+</section>
+
       {/* ===== KRON RAKAMLARLA ===== */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">{copy.statsTitle}</h2>
-            <p className="text-gray-500">{copy.statsSub}</p>
+<section style={{ backgroundColor: '#f5f5f5' }} className="py-16">
+  <div className="max-w-7xl mx-auto px-6">
+    <div className="text-center mb-12">
+      <h3 className="text-3xl font-bold text-gray-900 mb-2">{copy.statsTitle}</h3>
+      <p className="text-gray-500">{copy.statsSub}</p>
+    </div>
+    <div className="flex justify-center">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl w-full">
+        {[
+          { img: 'GroupZ1410078698Z1Z2.png', value: '6',     label: { tr: 'Kıta',      en: 'Continents'  } },
+          { img: 'country_04.jpg',           value: '35+',   label: { tr: 'Ülke',      en: 'Countries'   } },
+          { img: 'GroupZ1410078700Z1Z1_3.png',value: '200+', label: { tr: 'İş Ortağı', en: 'Partners'    } },
+          { img: 'GroupZ1410078701Z1Z1.png',  value: '1500+',label: { tr: 'Kurulum',   en: 'Deployments' } },
+        ].map((stat) => (
+          <div key={stat.value} className="flex flex-col items-center text-center px-4">
+            <img
+              src={`https://krontech.com/_upload/iconimages/${stat.img}`}
+              alt={stat.label.en}
+              className="object-contain mb-4"
+              style={{ width: '140px', height: '140px' }}
+            />
+            <h5 className="text-base text-gray-800">
+              <span className="font-bold" style={{ color: '#2563eb' }}>{stat.value}</span>
+              {' '}
+              <span className="font-normal text-gray-700">{stat.label[locale]}</span>
+            </h5>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {stats.map((stat) => (
-              <div key={stat.value} className="flex flex-col items-center gap-3">
-                <div className="w-20 h-20 rounded-full flex items-center justify-center text-3xl"
-                  style={{ background: 'linear-gradient(135deg, #e8f0fe, #c7d7fd)' }}>
-                  {stat.icon}
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-blue-600">{stat.value}</div>
-                  <div className="text-gray-600 font-medium">{stat.label[locale]}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* ===== BLOG ===== */}
       {posts.length > 0 && (
-        <section className="bg-gray-50 py-16">
-          <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-10 text-center">{copy.blogTitle}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {posts.map((post) => (
-                <Link
-                  key={post.id}
-                  href={`/${locale}/blog/${post.slug}`}
-                  className="group bg-white rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-all duration-300"
-                >
-                  <div className="h-44 flex items-center justify-center relative overflow-hidden"
-                    style={{ background: 'linear-gradient(135deg, #0d1b3e, #1a2f6e)' }}>
-                    <span className="absolute top-3 left-3 text-xs font-bold px-2 py-1 rounded text-white"
-                      style={{ backgroundColor: '#2563eb' }}>
-                      Blog
-                    </span>
-                    <span className="text-5xl font-black text-white opacity-10">
-                      {post.title?.charAt(0)}
-                    </span>
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                      {post.title}
-                    </h3>
-                    <div className="flex items-center justify-between mt-3 text-sm text-gray-400">
-                      <span>
-                        {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString(
-                          locale === 'tr' ? 'tr-TR' : 'en-US',
-                          { month: 'short', day: 'numeric', year: 'numeric' }
-                        ) : ''}
-                      </span>
-                      <span className="text-blue-600 font-medium">{copy.learnMore}</span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+  <BlogSlider locale={locale} posts={posts} />
+)}
 
       {/* ===== FOOTER ÜSTÜ CTA ===== */}
       <section style={{ background: 'linear-gradient(135deg, #0d1b3e, #111827)' }} className="py-16">

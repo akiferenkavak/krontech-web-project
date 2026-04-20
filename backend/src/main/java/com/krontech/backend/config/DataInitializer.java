@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -30,6 +31,7 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired private FormDefinitionRepository formDefinitionRepository;
     @Autowired private ResourceRepository resourceRepository;
     @Autowired private ResourceTranslationRepository resourceTranslationRepository;
+    @Autowired private MediaRepository mediaRepository;
     @Value("${app.admin.email:admin@krontech.com}")
     private String adminEmail;
 
@@ -78,9 +80,36 @@ public class DataInitializer implements CommandLineRunner {
         });
 
         Object[][] products = {
-            {"pam-kron",         "identity-access", "PAM Kron",         "Privileged Access Management",  "Ayrıcalıklı erişim yönetimi"},
-            {"data-security",    "data",            "Data Security",    "Data Security & Management",    "Veri güvenliği ve yönetimi"},
-            {"network-security", "network",         "Network Security", "Network Security Solutions",    "Ağ güvenliği çözümleri"},
+                {
+                        "pam-kron", "PAM Kron", "Privileged Access Management", "Ayrıcalıklı erişim yönetimi çözümü",
+                        "Protect your data and critical infrastructure with Kron PAM by managing privileged users and sessions.",
+                        "Kritik altyapınızı ve verilerinizi yetkili kullanıcı ve oturumları yöneterek koruyun.",
+                        "identity-access"
+                },
+                {
+                        "data-security", "Data Security", "Data Security & Management", "Veri güvenliği ve yönetim platformu",
+                        "Secure your sensitive data with dynamic masking, activity monitoring and telemetry solutions.",
+                        "Dinamik maskeleme, aktivite izleme ve telemetri çözümleriyle hassas verilerinizi koruyun.",
+                        "data"
+                },
+                {
+                        "network-security", "Network Security", "Network Security Solutions", "Ağ güvenliği çözümleri",
+                        "Protect your network infrastructure with comprehensive network security and access control.",
+                        "Kapsamlı ağ güvenliği ve erişim kontrolüyle altyapınızı koruyun.",
+                        "network"
+                },
+                {
+                        "dam", "Database Activity Monitoring", "Database Activity Monitoring", "Veritabanı Aktivite İzleme",
+                        "Secure your databases with Kron DAM and ensure continuous compliance, data integrity, and operational stability.",
+                        "Kron DAM ile veritabanlarınızı koruyun ve sürekli uyumluluk, veri bütünlüğü ve operasyonel istikrar sağlayın.",
+                        "data"
+                },
+                {
+                        "aaa-solution", "AAA Solution & Subscriber Management", "AAA Solution & Subscriber Management", "AAA Solution & Abone Yönetimi",
+                        "Manage authentication, authorization and accounting operations of mobile & fixed access subscriptions by Kron AAA.",
+                        "Mobil ve sabit ağ aboneliklerinin kimlik doğrulama, yetkilendirme ve hesap yönetimini Kron AAA ile yönetin.",
+                        "network"
+                },
         };
 
         for (Object[] p : products) {
@@ -118,63 +147,79 @@ public class DataInitializer implements CommandLineRunner {
 
         Language tr = languageRepository.findByCode("tr").orElseThrow();
         Language en = languageRepository.findByCode("en").orElseThrow();
-
         User admin = userRepository.findByEmail(adminEmail).orElseThrow();
 
         Object[][] posts = {
                 {
+                        "zero-trust-mimarisi",
+                        "https://krontech.com/_upload/blogimages/your-biggest-security-risk-isn-t-human-fixing-non-human-identities-with-kron-pam_blog.png",
+                        "zero-trust-blog.png",
+                        "Zero Trust Mimarisi Neden Önemlidir?",
+                        "Zero Trust Security Architecture: Why It Matters",
+                        "Sıfır güven mimarisi, modern siber güvenliğin temel taşlarından biri haline gelmiştir.",
+                        "Zero trust architecture has become one of the cornerstones of modern cybersecurity.",
+                        "<p>Zero trust mimarisi, hiçbir kullanıcıya veya cihaza otomatik olarak güvenilmemesi gerektiği ilkesine dayanır.</p>",
+                        "<p>Zero trust architecture is based on the principle that no user or device should be automatically trusted.</p>"
+                },
+                {
                         "pam-nedir",
+                        "https://krontech.com/_upload/blogimages/2026-cybersecurity-predictions-why-kron-pam-and-kron-dam-ddm-sit-at-the-center_blog.jpg",
+                        "pam-blog.jpg",
                         "PAM Nedir? Ayrıcalıklı Erişim Yönetimine Giriş",
                         "What is PAM? An Introduction to Privileged Access Management",
-                        "Ayrıcalıklı erişim yönetimi (PAM), kritik sistem ve verilere erişimi kontrol eden güvenlik çözümleridir.",
-                        "Privileged Access Management (PAM) refers to security solutions that control access to critical systems and data.",
-                        "<p>Ayrıcalıklı erişim yönetimi, kurumların en hassas kaynaklarını korumak için kullandığı temel güvenlik katmanıdır.</p>",
-                        "<p>Privileged Access Management is the fundamental security layer organizations use to protect their most sensitive resources.</p>",
+                        "Ayrıcalıklı erişim yönetimi, kritik sistem ve verilere erişimi kontrol eder.",
+                        "Privileged access management controls access to critical systems and data.",
+                        "<p>PAM çözümleri, yetkili kullanıcıların sistem kaynaklarına erişimini merkezi olarak yönetir ve denetler.</p>",
+                        "<p>PAM solutions centrally manage and audit privileged user access to system resources.</p>"
                 },
                 {
-                        "sifre-guvenligi",
-                        "Şifre Güvenliği: En İyi Pratikler",
-                        "Password Security: Best Practices",
-                        "Güçlü şifre politikaları ve çok faktörlü kimlik doğrulama ile hesaplarınızı koruyun.",
-                        "Protect your accounts with strong password policies and multi-factor authentication.",
-                        "<p>Şifre güvenliği, siber güvenliğin temel taşlarından biridir. Güçlü şifreler ve MFA kullanımı kritik önem taşır.</p>",
-                        "<p>Password security is one of the cornerstones of cybersecurity. Strong passwords and MFA usage are critically important.</p>",
-                },
-                {
-                        "zero-trust-mimarisi",
-                        "Zero Trust Mimarisi Neden Önemli?",
-                        "Why Zero Trust Architecture Matters",
-                        "Geleneksel güvenlik modellerinin yetersiz kaldığı günümüzde Zero Trust yaklaşımı öne çıkıyor.",
-                        "As traditional security models fall short, the Zero Trust approach is coming to the forefront.",
-                        "<p>Zero Trust mimarisi, hiçbir kullanıcıya veya sisteme varsayılan olarak güvenilmemesi ilkesine dayanır.</p>",
-                        "<p>Zero Trust architecture is based on the principle of never trusting any user or system by default.</p>",
+                        "veri-guvenligi",
+                        "https://krontech.com/_upload/blogimages/multi-tenant-privileged-access-management-for-msps-and-mssps_blog.jpg",
+                        "data-security-blog.jpg",
+                        "Veri Güvenliği: En İyi Pratikler",
+                        "Data Security: Best Practices",
+                        "Kurumsal veri güvenliği stratejileri ve uygulamaları hakkında kapsamlı bir rehber.",
+                        "A comprehensive guide on enterprise data security strategies and implementations.",
+                        "<p>Veri güvenliği, hassas bilgilerin yetkisiz erişime, kullanıma veya ifşaya karşı korunması sürecidir.</p>",
+                        "<p>Data security is the process of protecting sensitive information against unauthorized access, use, or disclosure.</p>"
                 },
         };
 
         for (Object[] p : posts) {
+            // Media oluştur
+            Media media = new Media();
+            media.setUrl((String) p[1]);
+            media.setFilename((String) p[2]);
+            media.setMimeType("image/jpeg");
+            media.setAltText((String) p[3]);
+            media.setUploadedBy(admin);
+            media = mediaRepository.save(media);
+
+            // BlogPost oluştur
             BlogPost post = new BlogPost();
             post.setSlug((String) p[0]);
             post.setAuthor(admin);
+            post.setFeaturedImage(media);
             post = blogPostRepository.save(post);
 
             BlogPostTranslation bpTr = new BlogPostTranslation();
             bpTr.setBlogPost(post);
             bpTr.setLanguage(tr);
-            bpTr.setTitle((String) p[1]);
-            bpTr.setExcerpt((String) p[3]);
-            bpTr.setContent((String) p[5]);
+            bpTr.setTitle((String) p[3]);
+            bpTr.setExcerpt((String) p[5]);
+            bpTr.setContent((String) p[7]);
             bpTr.setStatus(ContentStatus.PUBLISHED);
-            bpTr.setPublishedAt(java.time.LocalDateTime.now());
+            bpTr.setPublishedAt(LocalDateTime.now());
             blogPostTranslationRepository.save(bpTr);
 
             BlogPostTranslation bpEn = new BlogPostTranslation();
             bpEn.setBlogPost(post);
             bpEn.setLanguage(en);
-            bpEn.setTitle((String) p[2]);
-            bpEn.setExcerpt((String) p[4]);
-            bpEn.setContent((String) p[6]);
+            bpEn.setTitle((String) p[4]);
+            bpEn.setExcerpt((String) p[6]);
+            bpEn.setContent((String) p[8]);
             bpEn.setStatus(ContentStatus.PUBLISHED);
-            bpEn.setPublishedAt(java.time.LocalDateTime.now());
+            bpEn.setPublishedAt(LocalDateTime.now());
             blogPostTranslationRepository.save(bpEn);
         }
 
