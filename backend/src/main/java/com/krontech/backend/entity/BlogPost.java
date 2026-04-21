@@ -18,6 +18,9 @@ public class BlogPost extends BaseEntity {
     @JoinColumn(name = "author_id")
     private User author;
 
+    @Column(name = "is_featured", nullable = false)
+    private boolean featured = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "featured_image_id")
     private Media featuredImage;

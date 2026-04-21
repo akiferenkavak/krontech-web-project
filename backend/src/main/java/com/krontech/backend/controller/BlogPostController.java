@@ -53,6 +53,12 @@ public class BlogPostController {
         return ResponseEntity.ok(blogPostService.getPostBySlug(slug));
     }
 
+    @GetMapping("/featured")
+    public ResponseEntity<List<BlogPostSummaryResponse>> getFeaturedPosts(
+            @RequestParam(defaultValue = "en") String lang) {
+        return ResponseEntity.ok(blogPostService.getFeaturedPosts(lang));
+    }
+
     // Yeni post oluştur
     @PostMapping
     public ResponseEntity<BlogPostDetailResponse> createPost(

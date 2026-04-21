@@ -13,5 +13,6 @@ public record BlogPostSummaryResponse(
         String featuredImageUrl,
         String authorName,
         List<TagResponse> tags,
-        LocalDateTime publishedAt
+        LocalDateTime publishedAt,
+        boolean featured
 ) {}

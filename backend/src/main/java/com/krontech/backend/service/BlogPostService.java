@@ -85,6 +85,14 @@ public class BlogPostService {
         return mapToDetail(post);
     }
 
+    @Transactional(readOnly = true)
+    public List<BlogPostSummaryResponse> getFeaturedPosts(String langCode) {
+        return blogPostRepository.findFeaturedByLanguage(langCode)
+                .stream()
+                .map(post -> mapToSummary(post, langCode))
+                .toList();
+    }
+
     // --- ID ile detay getir ---
     @Transactional(readOnly = true)
     public BlogPostDetailResponse getPostById(UUID id) {
@@ -263,7 +271,8 @@ public class BlogPostService {
                 post.getFeaturedImage() != null ? post.getFeaturedImage().getUrl() : null,
                 post.getAuthor() != null ? post.getAuthor().getEmail() : null,
                 post.getTags().stream().map(this::mapTag).toList(),
-                translation != null ? translation.getPublishedAt() : null
+                translation != null ? translation.getPublishedAt() : null,
+                post.isFeatured()
         );
     }
 

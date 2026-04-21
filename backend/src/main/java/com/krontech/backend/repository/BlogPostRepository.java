@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -72,4 +73,16 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, UUID> {
         @Param("status") ContentStatus status,
         Pageable pageable
     );
+
+    @Query("""
+    SELECT b FROM BlogPost b
+    LEFT JOIN FETCH b.featuredImage
+    LEFT JOIN b.translations t
+    WHERE b.featured = true
+    AND t.language.code = :langCode
+    AND t.status = com.krontech.backend.entity.ContentStatus.PUBLISHED
+    ORDER BY b.createdAt DESC
+    """)
+    List<BlogPost> findFeaturedByLanguage(@Param("langCode") String langCode);
+
 }

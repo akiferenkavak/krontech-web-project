@@ -61,6 +61,7 @@ export interface BlogPostSummary {
   authorName: string | null;
   tags: { id: string; slug: string }[];
   publishedAt: string | null;
+  featured: boolean;
 }
 
 export interface BlogPostTranslation {
@@ -137,4 +138,8 @@ export function getBlogPosts(
 
 export function getBlogPostBySlug(slug: string, locale: string): Promise<BlogPostDetail> {
   return apiFetch(`/blog-posts/slug/${slug}`);
+}
+
+export function getFeaturedBlogPosts(locale: string): Promise<BlogPostSummary[]> {
+  return apiFetch(`/blog-posts/featured?lang=${locale}`);
 }

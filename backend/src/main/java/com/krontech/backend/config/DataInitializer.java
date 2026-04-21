@@ -236,6 +236,7 @@ public class DataInitializer implements CommandLineRunner {
             post.setSlug((String) p[0]);
             post.setAuthor(admin);
             post.setFeaturedImage(media);
+            post.setFeatured(true);
             post = blogPostRepository.save(post);
 
             BlogPostTranslation bpTr = new BlogPostTranslation();

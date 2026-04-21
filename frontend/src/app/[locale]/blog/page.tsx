@@ -1,7 +1,10 @@
-import Link from 'next/link';
 import { type Locale } from '@/i18n/config';
-import { getBlogPosts, type BlogPostSummary } from '@/lib/api';
+import { getBlogPosts, getFeaturedBlogPosts } from '@/lib/api';
 import type { Metadata } from 'next';
+import BlogHero from '@/components/BlogHero';
+import CategoryBreadcrumb from '@/components/CategoryBreadcrumb';
+import BlogList from '@/components/BlogList';
+import BlogSidebar from '@/components/BlogSidebar';
 
 export async function generateMetadata({
   params,
@@ -16,99 +19,83 @@ export async function generateMetadata({
       : 'Latest insights from the world of cybersecurity and technology.',
     alternates: {
       languages: {
-        'tr': 'https://krontech.com/tr/blog',
-        'en': 'https://krontech.com/en/blog',
+        tr: 'https://krontech.com/tr/blog',
+        en: 'https://krontech.com/en/blog',
       },
     },
   };
 }
 
+const PAGE_SIZE = 5;
 
-const t = {
-  tr: {
-    title: 'Blog',
-    subtitle: 'Siber güvenlik ve teknoloji dünyasından güncel içerikler.',
-    empty: 'Henüz blog yazısı bulunmuyor.',
-    error: 'Blog yazıları yüklenemedi.',
-    readMore: 'Devamını Oku →',
-  },
-  en: {
-    title: 'Blog',
-    subtitle: 'Latest insights from the world of cybersecurity and technology.',
-    empty: 'No blog posts yet.',
-    error: 'Could not load blog posts.',
-    readMore: 'Read More →',
-  },
-};
-
-export default async function BlogListPage({
+export default async function BlogPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { locale } = await params;
-  const copy = t[locale];
+  const { page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageParam ?? '1', 10));
 
-  let posts: BlogPostSummary[] = [];
-  let error = false;
+  let posts = [];
+  let totalPages = 1;
+  let featuredPosts = [];
 
   try {
-    const data = await getBlogPosts(locale);
+    const data = await getBlogPosts(locale, currentPage - 1, PAGE_SIZE);
     posts = data.content;
+    totalPages = data.totalPages;
   } catch {
-    error = true;
+    posts = [];
   }
 
-  return (
-    <main>
-      {/* Hero band */}
-      <div style={{ background: 'linear-gradient(135deg, #0d1b3e, #1a2f6e)' }} className="py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <h1 className="text-4xl font-bold text-white mb-2">{copy.title}</h1>
-          <p style={{ color: 'rgba(255,255,255,0.6)' }}>{copy.subtitle}</p>
-        </div>
-      </div>
+  try {
+    featuredPosts = await getFeaturedBlogPosts(locale);
+  } catch {
+    featuredPosts = [];
+  }
 
-      <div className="bg-gray-50 py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          {error && <p className="text-red-500 text-sm">{copy.error}</p>}
-          {!error && posts.length === 0 && <p className="text-gray-400 text-sm">{copy.empty}</p>}
-          {!error && posts.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {posts.map((post) => (
-                <Link
-                  key={post.id}
-                  href={`/${locale}/blog/${post.slug}`}
-                  className="group bg-white rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-all"
-                >
-                  <div className="h-44 flex items-center justify-center relative"
-                    style={{ background: 'linear-gradient(135deg, #0d1b3e, #1a2f6e)' }}>
-                    <span className="absolute top-3 left-3 text-xs font-bold px-2 py-1 rounded text-white bg-blue-600">
-                      Blog
-                    </span>
-                    <span className="text-5xl font-black text-white opacity-10">
-                      {post.title?.charAt(0)}
-                    </span>
-                  </div>
-                  <div className="p-6">
-                    <p className="text-xs text-gray-400 mb-2">
-                      {new Date(post.publishedAt ?? '').toLocaleDateString(
-                        locale === 'tr' ? 'tr-TR' : 'en-US',
-                        { year: 'numeric', month: 'short', day: 'numeric' }
-                      )}
-                    </p>
-                    <h2 className="font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
-                      {post.title}
-                    </h2>
-                    {post.excerpt && (
-                      <p className="text-sm text-gray-500 line-clamp-3 mb-4">{post.excerpt}</p>
-                    )}
-                    <span className="text-sm text-blue-600 font-semibold">{copy.readMore}</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
+  const isTr = locale === 'tr';
+
+  return (
+    <main style={{ backgroundColor: '#f5f5f5', minHeight: '60vh' }}>
+      <BlogHero
+        bannerUrl="https://krontech.com/_upload/bannerimages/66b3f3362bf39418420b9a5c2dadc037-5eccfbd5a5018.jpg"
+        title="Blog"
+      />
+      <CategoryBreadcrumb
+        locale={locale}
+        categoryTitle="Blog"
+      />
+
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '40px 24px 64px' }}>
+        <div style={{ display: 'flex', gap: '32px', alignItems: 'flex-start' }}>
+
+          {/* Sol — Blog listesi %66 */}
+          <div style={{ flex: '0 0 calc(66.666% - 16px)', minWidth: 0 }}>
+            {posts.length === 0 ? (
+              <p style={{ color: '#6b7280' }}>
+                {isTr ? 'Henüz blog yazısı yok.' : 'No blog posts yet.'}
+              </p>
+            ) : (
+              <BlogList
+                locale={locale}
+                posts={posts}
+                currentPage={currentPage}
+                totalPages={totalPages}
+              />
+            )}
+          </div>
+
+          {/* Sağ — Sidebar %33 */}
+          <div style={{ flex: '0 0 calc(33.333% - 16px)', minWidth: 0 }}>
+            {featuredPosts.length > 0 && (
+              <BlogSidebar locale={locale} posts={featuredPosts} />
+            )}
+          </div>
+
         </div>
       </div>
     </main>
