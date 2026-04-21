@@ -87,6 +87,42 @@ public class DataInitializer implements CommandLineRunner {
                         "identity-access"
                 },
                 {
+                        "password-vault", "Password Vault", "Password Vault", "Şifre Kasası",
+                        "Prevent sharing of authorized account passwords and hijacking by malicious people with Password Vault.",
+                        "Yetkili hesap şifrelerinin paylaşılmasını ve kötü niyetli kişiler tarafından ele geçirilmesini Password Vault ile önleyin.",
+                        "identity-access"
+                },
+                {
+                        "privileged-session-manager", "Privileged Session Manager", "Privileged Session Manager", "Ayrıcalıklı Oturum Yöneticisi",
+                        "Session Manager logs and records all sessions for network and servers, including command and context-aware filtering.",
+                        "Oturum Yöneticisi, ağ ve sunucular için komut ve bağlam farkında filtreleme dahil tüm oturumları kaydeder.",
+                        "identity-access"
+                },
+                {
+                        "multi-factor-authentication", "Multi-Factor Authentication", "Multi-Factor Authentication", "Çok Faktörlü Kimlik Doğrulama",
+                        "Secure the remote access to your critical data with Multi-Factor Authentication's advanced features such as OTP, geolocation and time-based authentication.",
+                        "OTP, coğrafi konum ve zaman tabanlı kimlik doğrulama gibi gelişmiş özelliklerle kritik verilerinize uzaktan erişimi güvence altına alın.",
+                        "identity-access"
+                },
+                {
+                        "endpoint-privileged-management", "Endpoint Privileged Management", "Endpoint Privileged Management", "Uç Nokta Ayrıcalık Yönetimi",
+                        "Authorize applications and commands on endpoints with Endpoint Privilege Management, ensure the principle of least privilege effortlessly.",
+                        "Uç Nokta Ayrıcalık Yönetimi ile uç noktalardaki uygulama ve komutları yetkilendirin, en az ayrıcalık ilkesini zahmetsizce uygulayın.",
+                        "identity-access"
+                },
+                {
+                        "user-behavior-analytics", "User Behavior Analytics", "User Behavior Analytics", "Kullanıcı Davranış Analizi",
+                        "Detect malicious activities of internal threats with AI-powered advanced algorithms of User Behavior Analysis.",
+                        "Kullanıcı Davranış Analizinin yapay zeka destekli gelişmiş algoritmalarıyla iç tehditlerin kötü niyetli aktivitelerini tespit edin.",
+                        "identity-access"
+                },
+                {
+                        "unified-access-manager", "Unified Access Manager", "Unified Access Manager", "Birleşik Erişim Yöneticisi",
+                        "Unified Access Manager provides AAA services for network infrastructure and extends authentication and policy configurations of AD to network.",
+                        "Birleşik Erişim Yöneticisi, ağ altyapısı için AAA hizmetleri sağlar ve AD'nin kimlik doğrulama ve politika yapılandırmalarını ağa genişletir.",
+                        "identity-access"
+                },
+                {
                         "data-security", "Data Security", "Data Security & Management", "Veri güvenliği ve yönetim platformu",
                         "Secure your sensitive data with dynamic masking, activity monitoring and telemetry solutions.",
                         "Dinamik maskeleme, aktivite izleme ve telemetri çözümleriyle hassas verilerinizi koruyun.",
@@ -115,7 +151,7 @@ public class DataInitializer implements CommandLineRunner {
         for (Object[] p : products) {
             Product product = new Product();
             product.setSlug((String) p[0]);
-            product.setCategory((String) p[1]);
+            product.setCategory((String) p[6]);
             product.setActive(true);
             product.setSortOrder(0);
             product = productRepository.save(product);
@@ -124,7 +160,7 @@ public class DataInitializer implements CommandLineRunner {
             ptTr.setProduct(product);
             ptTr.setLanguage(tr);
             ptTr.setTitle((String) p[2]);
-            ptTr.setShortDescription((String) p[4]);
+            ptTr.setShortDescription((String) p[5]);
             ptTr.setStatus(ContentStatus.PUBLISHED);
             ptTr.setPublishedAt(LocalDateTime.now());
             productTranslationRepository.save(ptTr);
@@ -133,7 +169,7 @@ public class DataInitializer implements CommandLineRunner {
             ptEn.setProduct(product);
             ptEn.setLanguage(en);
             ptEn.setTitle((String) p[2]);
-            ptEn.setShortDescription((String) p[3]);
+            ptEn.setShortDescription((String) p[4]);
             ptEn.setStatus(ContentStatus.PUBLISHED);
             ptEn.setPublishedAt(LocalDateTime.now());
             productTranslationRepository.save(ptEn);

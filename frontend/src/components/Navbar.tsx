@@ -9,6 +9,7 @@ const productsMenu = {
   categories: [
     {
       key: 'iam',
+      href: '/products/category/identity-access',
       label: { tr: 'Kimlik ve Erişim Yönetimi', en: 'Identity & Access Management' },
       items: [
         {
@@ -31,6 +32,7 @@ const productsMenu = {
     },
     {
       key: 'data',
+      href: '/products/category/data',
       label: { tr: 'Veri Güvenliği ve Yönetimi', en: 'Data Security & Data Management' },
       items: [
         { key: 'telemetry', label: { tr: 'Telemetri Pipeline', en: 'Telemetry Pipeline' }, href: '/products/data-security' },
@@ -40,6 +42,7 @@ const productsMenu = {
     },
     {
       key: 'telco',
+      href: '/products/category/network',
       label: { tr: 'Telko Çözümleri', en: 'Telco Solutions' },
       items: [
         { key: 'ipdr', label: { tr: 'IPDR Loglama', en: 'IPDR Logging' }, href: '/products/network-security' },
@@ -105,15 +108,21 @@ function ProductsPanel({ locale }: { locale: Locale }) {
       <div style={{ width: '320px', minWidth: '320px', padding: '16px 24px 16px 16px', borderRight: '1px solid #e5e7eb' }}>
         {productsMenu.categories.map((cat) => (
           <div key={cat.key} style={{ marginBottom: '4px' }}>
-            <button
-              onClick={() => setOpenCat(openCat === cat.key ? null : cat.key)}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 0', fontSize: '14px', fontWeight: 600, color: '#111827', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
-            >
+            <Link
+              href={`/${locale}${cat.href}`}
+  onClick={() => setOpenCat(openCat === cat.key ? null : cat.key)}
+  style={{
+    width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '5px 0', fontSize: '14px', fontWeight: 600, color: '#111827',
+    background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left',
+    textDecoration: 'none',
+  }}
+>
               {cat.label[locale]}
               <svg style={{ width: '13px', height: '13px', color: '#9ca3af', flexShrink: 0, transform: openCat === cat.key ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
-            </button>
+            </Link>
             {openCat === cat.key && (
               <div style={{ paddingBottom: '8px' }}>
                 {cat.items.map((item) => (
