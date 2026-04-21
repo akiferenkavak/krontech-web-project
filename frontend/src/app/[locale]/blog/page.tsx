@@ -1,10 +1,11 @@
 import { type Locale } from '@/i18n/config';
-import { getBlogPosts, getFeaturedBlogPosts } from '@/lib/api';
+import { getBlogPosts, getFeaturedBlogPosts, type BlogPostSummary } from '@/lib/api';
 import type { Metadata } from 'next';
 import BlogHero from '@/components/BlogHero';
 import CategoryBreadcrumb from '@/components/CategoryBreadcrumb';
 import BlogList from '@/components/BlogList';
 import BlogSidebar from '@/components/BlogSidebar';
+import styles from '@/components/blog.module.css';
 
 export async function generateMetadata({
   params,
@@ -13,7 +14,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   return {
-    title: locale === 'tr' ? 'Blog' : 'Blog',
+    title: 'Blog',
     description: locale === 'tr'
       ? 'Siber güvenlik ve teknoloji dünyasından güncel içerikler.'
       : 'Latest insights from the world of cybersecurity and technology.',
@@ -39,9 +40,9 @@ export default async function BlogPage({
   const { page: pageParam } = await searchParams;
   const currentPage = Math.max(1, parseInt(pageParam ?? '1', 10));
 
-  let posts = [];
+  let posts: BlogPostSummary[] = [];
   let totalPages = 1;
-  let featuredPosts = [];
+  let featuredPosts: BlogPostSummary[] = [];
 
   try {
     const data = await getBlogPosts(locale, currentPage - 1, PAGE_SIZE);
@@ -60,21 +61,17 @@ export default async function BlogPage({
   const isTr = locale === 'tr';
 
   return (
-    <main style={{ backgroundColor: '#f5f5f5', minHeight: '60vh' }}>
+    <main className={styles.page}>
       <BlogHero
         bannerUrl="https://krontech.com/_upload/bannerimages/66b3f3362bf39418420b9a5c2dadc037-5eccfbd5a5018.jpg"
         title="Blog"
       />
-      <CategoryBreadcrumb
-        locale={locale}
-        categoryTitle="Blog"
-      />
+      <CategoryBreadcrumb locale={locale} categoryTitle="Blog" />
 
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '40px 24px 64px' }}>
-        <div style={{ display: 'flex', gap: '32px', alignItems: 'flex-start' }}>
+      <div className={styles.container}>
+        <div className={styles.layout}>
 
-          {/* Sol — Blog listesi %66 */}
-          <div style={{ flex: '0 0 calc(66.666% - 16px)', minWidth: 0 }}>
+          <div className={styles.mainCol}>
             {posts.length === 0 ? (
               <p style={{ color: '#6b7280' }}>
                 {isTr ? 'Henüz blog yazısı yok.' : 'No blog posts yet.'}
@@ -89,8 +86,7 @@ export default async function BlogPage({
             )}
           </div>
 
-          {/* Sağ — Sidebar %33 */}
-          <div style={{ flex: '0 0 calc(33.333% - 16px)', minWidth: 0 }}>
+          <div className={styles.sideCol}>
             {featuredPosts.length > 0 && (
               <BlogSidebar locale={locale} posts={featuredPosts} />
             )}

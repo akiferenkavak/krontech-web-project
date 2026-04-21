@@ -29,7 +29,8 @@ export default function BlogHero({ bannerUrl, title }: BlogHeroProps) {
             fontWeight: 300,
             color: 'white',
             margin: 0,
-            letterSpacing: '1px',
+            letterSpacing: '2px',
+            fontFamily: 'Georgia, "Times New Roman", serif',
           }}>
             {title}
           </h1>
