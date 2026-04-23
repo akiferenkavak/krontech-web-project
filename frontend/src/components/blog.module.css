@@ -246,3 +246,259 @@
     height: 220px;
   }
 }
+/* ===== BLOG DETAIL ===== */
+
+.detailPage {
+  background-color: #f5f5f5;
+  min-height: 60vh;
+}
+
+.detailContainer {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 24px 64px;
+}
+
+.detailLayout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.detailMainCol {
+  flex: 0 0 calc(60% - 16px);
+  min-width: 0;
+}
+
+.detailSideCol {
+  flex: 0 0 calc(40% - 16px);
+  min-width: 0;
+  align-self: flex-start;
+  position: sticky;
+  top: 120px;
+}
+
+/* Kart wrapper */
+.detailCard {
+  background-color: white;
+  overflow: hidden;
+}
+
+/* Kapak görseli */
+.detailCoverImage {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+}
+
+/* İçerik alanı */
+.detailBody {
+  padding: 28px 32px 36px;
+}
+
+/* Başlık */
+.detailTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.4;
+  margin: 0 0 12px;
+}
+
+/* Meta: tarih + yazar */
+.detailMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+.detailMetaDivider {
+  color: #d1d5db;
+}
+
+/* Sosyal medya */
+.detailSocials {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detailSocialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.detailSocialLink:hover {
+  background-color: #e5e7eb;
+}
+
+.detailSocialIcon {
+  width: 16px;
+  height: 16px;
+  fill: #374151;
+}
+
+/* Blog içeriği */
+.detailContent {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #374151;
+}
+
+.detailContent h1,
+.detailContent h2,
+.detailContent h3,
+.detailContent h4 {
+  font-weight: 700;
+  color: #111827;
+  margin: 28px 0 12px;
+  line-height: 1.4;
+}
+
+.detailContent h1 { font-size: 24px; }
+.detailContent h2 { font-size: 20px; }
+.detailContent h3 { font-size: 18px; }
+.detailContent h4 { font-size: 16px; }
+
+.detailContent p {
+  margin: 0 0 16px;
+}
+
+.detailContent a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.detailContent a:hover {
+  text-decoration: underline;
+}
+
+.detailContent ul,
+.detailContent ol {
+  margin: 0 0 16px;
+  padding-left: 24px;
+}
+
+.detailContent li {
+  margin-bottom: 6px;
+}
+
+.detailContent strong {
+  font-weight: 700;
+  color: #111827;
+}
+
+.detailContent img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 16px 0;
+}
+
+.detailContent blockquote {
+  border-left: 4px solid #2563eb;
+  margin: 20px 0;
+  padding: 12px 20px;
+  background-color: #f8faff;
+  color: #4b5563;
+  font-style: italic;
+}
+
+/* No content placeholder */
+.detailNoContent {
+  color: #9ca3af;
+  font-style: italic;
+  padding: 24px 0;
+}
+
+/* ===== OTHER BLOGS başlık ===== */
+.otherBlogsSection {
+  background-color: white;
+  padding: 48px 0;
+  margin-top: 0;
+}
+
+.otherBlogsTitle {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 32px;
+}
+
+/* ===== BREADCRUMB (detail) ===== */
+.detailBreadcrumb {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 10px 0;
+}
+
+.detailBreadcrumbInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #6b7280;
+  flex-wrap: wrap;
+}
+
+.detailBreadcrumbLink {
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.detailBreadcrumbLink:hover {
+  color: #2563eb;
+}
+
+.detailBreadcrumbCurrent {
+  color: #111827;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 400px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .detailLayout {
+    flex-direction: column;
+  }
+
+  .detailMainCol,
+  .detailSideCol {
+    flex: 0 0 100%;
+    width: 100%;
+    position: static;
+  }
+
+  .detailBody {
+    padding: 20px 16px 24px;
+  }
+
+  .detailTitle {
+    font-size: 20px;
+  }
+
+  .detailBreadcrumbCurrent {
+    max-width: 200px;
+  }
+}
