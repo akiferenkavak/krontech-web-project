@@ -16,5 +16,7 @@ public record BlogPostCreateRequest(
         UUID featuredImageId,
 
         // Tag slug listesi — ["pam", "cyber-security"] gibi
-        List<String> tagSlugs
+        List<String> tagSlugs,
+
+        String featuredImageUrl
 ) {}

@@ -22,5 +22,7 @@ public record ProductCreateRequest(
         java.util.UUID parentId,
 
         // Featured image ID'si — opsiyonel
-        java.util.UUID featuredImageId
+        java.util.UUID featuredImageId,
+
+        String bannerImageUrl
 ) {}

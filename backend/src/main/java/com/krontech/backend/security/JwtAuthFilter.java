@@ -4,6 +4,7 @@ import com.krontech.backend.entity.User;
 import com.krontech.backend.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -30,22 +32,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
+        String token = extractToken(request);
 
-        // Header yoksa veya Bearer ile başlamıyorsa geç
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (token == null || !jwtService.isTokenValid(token)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        final String token = authHeader.substring(7);
-
-        if (!jwtService.isTokenValid(token)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // Zaten authenticate edilmişse tekrar yapma
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             filterChain.doFilter(request, response);
             return;
@@ -54,7 +47,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String email = jwtService.extractEmail(token);
         String role = jwtService.extractRole(token);
 
-        // Kullanıcı gerçekten var mı kontrol et
         User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
             filterChain.doFilter(request, response);
@@ -69,6 +61,33 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
+        // Controller'larda kolayca erişilebilsin diye attribute olarak ekle
+        request.setAttribute("authenticatedEmail", email);
+        request.setAttribute("authenticatedRole", role);
+
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * Token'ı önce HttpOnly cookie'den, bulamazsa Authorization header'dan çeker.
+     * Admin panel cookie kullanır; Swagger/API testleri header kullanabilir.
+     */
+    private String extractToken(HttpServletRequest request) {
+        // 1. Cookie'den dene
+        if (request.getCookies() != null) {
+            return Arrays.stream(request.getCookies())
+                    .filter(c -> "admin_token".equals(c.getName()))
+                    .map(Cookie::getValue)
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        // 2. Authorization header'dan dene (Swagger / API test için)
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+
+        return null;
     }
 }

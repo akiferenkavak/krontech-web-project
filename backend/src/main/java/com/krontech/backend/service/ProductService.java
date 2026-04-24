@@ -113,6 +113,7 @@ public class ProductService {
         product.setSlug(request.slug());
         product.setCategory(request.category());
         product.setActive(request.isActive());
+        product.setBannerImageUrl(request.bannerImageUrl());
         product.setSortOrder(request.sortOrder() != null ? request.sortOrder() : 0);
 
         if (request.parentId() != null) {

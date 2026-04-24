@@ -141,6 +141,20 @@ public class BlogPostService {
         BlogPost post = blogPostRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Blog yazısı bulunamadı! ID: " + id));
 
+
+
+if (request.featuredImageUrl() != null && !request.featuredImageUrl().isBlank()) {
+    Media media = new Media();
+    media.setUrl(request.featuredImageUrl());
+    media.setFilename(request.slug() + "-featured");
+    media.setMimeType("image/jpeg");
+    User admin = userRepository.findByEmail("admin@krontech.com")
+            .orElse(userRepository.findAll().get(0)); // fallback
+    media.setUploadedBy(admin);
+    media = mediaRepository.save(media);
+    post.setFeaturedImage(media);
+}
+                
         if (!post.getSlug().equals(request.slug()) && blogPostRepository.existsBySlug(request.slug())) {
             throw new IllegalArgumentException("Bu slug zaten kullanımda: " + request.slug());
         }

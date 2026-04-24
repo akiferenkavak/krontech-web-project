@@ -37,3 +37,6 @@ app:
   jwt:
     secret: ${JWT_SECRET}
     expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  cookie:
+    secure: true
+    max-age-seconds: 86400
