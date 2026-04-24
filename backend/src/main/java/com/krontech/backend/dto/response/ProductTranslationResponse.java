@@ -21,5 +21,8 @@ public record ProductTranslationResponse(
         String structuredData,
         ContentStatus status,
         LocalDateTime publishedAt,
-        LocalDateTime scheduledAt
+        LocalDateTime scheduledAt,
+        String howItWorksContent,
+        String keyBenefitsContent,
+        String productFamilyContent
 ) {}

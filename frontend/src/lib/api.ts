@@ -34,6 +34,9 @@ export interface ProductTranslation {
   title: string;
   shortDescription: string | null;
   content: string | null;
+  howItWorksContent: string | null;
+  keyBenefitsContent: string | null;
+  productFamilyContent: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
   status: string;
@@ -48,6 +51,7 @@ export interface ProductDetail {
   sortOrder: number;
   parentId: string | null;
   featuredImageUrl: string | null;
+  bannerImageUrl: string | null;
   translations: ProductTranslation[];
   children: ProductSummary[];
 }

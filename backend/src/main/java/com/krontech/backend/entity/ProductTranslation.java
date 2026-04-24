@@ -67,4 +67,13 @@ public class ProductTranslation {
 
     @Column(name = "scheduled_at")
     private LocalDateTime scheduledAt;
+
+    @Column(name = "how_it_works_content", columnDefinition = "TEXT")
+    private String howItWorksContent;
+
+    @Column(name = "key_benefits_content", columnDefinition = "TEXT")
+    private String keyBenefitsContent;
+
+    @Column(name = "product_family_content", columnDefinition = "TEXT")
+    private String productFamilyContent;
 }

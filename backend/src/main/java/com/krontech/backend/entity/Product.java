@@ -23,6 +23,9 @@ public class Product extends BaseEntity {
     @Column(name = "sort_order")
     private Integer sortOrder = 0;
 
+    @Column(name = "banner_image_url")
+    private String bannerImageUrl;
+
     // Self-referencing: kategori → alt ürün hiyerarşisi
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")

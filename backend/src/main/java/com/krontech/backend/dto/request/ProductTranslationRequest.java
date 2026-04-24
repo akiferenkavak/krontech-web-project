@@ -17,6 +17,9 @@ public record ProductTranslationRequest(
 
         String shortDescription,
         String content,
+        String howItWorksContent,
+        String keyBenefitsContent,
+        String productFamilyContent,
 
         // SEO alanları
         String seoTitle,

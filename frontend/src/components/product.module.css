@@ -1,0 +1,447 @@
+/* ===== BANNER ===== */
+.banner {
+  position: relative;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.bannerOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.65) 0%,
+    rgba(0, 0, 0, 0.3) 60%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+}
+
+.bannerContent {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  width: 100%;
+}
+
+.bannerTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 16px;
+  line-height: 1.2;
+}
+
+.bannerDesc {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 560px;
+  line-height: 1.6;
+  margin: 0 0 28px;
+}
+
+.bannerButtons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.bannerBtnOutline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: 1px solid white;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.bannerBtnOutline:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ===== TAB BAR ===== */
+.tabBar {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 80px;
+  z-index: 100;
+}
+
+.tabBarInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabBarInner::-webkit-scrollbar {
+  display: none;
+}
+
+.tabLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tabLink:hover {
+  color: #111827;
+}
+
+.tabLinkActive {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+.tabIcon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+/* ===== BREADCRUMB ===== */
+.breadcrumb {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 10px 0;
+}
+
+.breadcrumbInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #6b7280;
+  flex-wrap: wrap;
+}
+
+.breadcrumbLink {
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.breadcrumbLink:hover {
+  color: #2563eb;
+}
+
+.breadcrumbCurrent {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* ===== PAGE CONTENT ===== */
+.pageContent {
+  background: #f5f5f5;
+  min-height: 50vh;
+}
+
+.contentInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px 64px;
+}
+
+/* ===== CONTENT BLOCKS (Solution / How It Works) ===== */
+.contentBlock {
+  display: flex;
+  align-items: stretch;
+  background: white;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.contentBlockReverse {
+  flex-direction: row-reverse;
+}
+
+.contentBlockText {
+  flex: 1;
+  padding: 48px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.contentBlockHeading {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 16px;
+  line-height: 1.4;
+}
+
+.contentBlockHeading span {
+  color: #2563eb;
+  background-color: #2563eb;
+  color: white;
+  padding: 0 4px;
+}
+
+.contentBlockBody {
+  font-size: 15px;
+  color: #4b5563;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.contentBlockImage {
+  flex: 0 0 50%;
+  max-width: 50%;
+  overflow: hidden;
+}
+
+.contentBlockImage img {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+/* HTML içerik render */
+.htmlContent {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #374151;
+}
+
+.htmlContent h1, .htmlContent h2, .htmlContent h3, .htmlContent h4 {
+  font-weight: 700;
+  color: #111827;
+  margin: 28px 0 12px;
+  line-height: 1.4;
+}
+
+.htmlContent h2 { font-size: 20px; }
+.htmlContent h3 { font-size: 18px; }
+
+.htmlContent p { margin: 0 0 16px; }
+
+.htmlContent ul, .htmlContent ol {
+  margin: 0 0 16px;
+  padding-left: 24px;
+}
+
+.htmlContent li { margin-bottom: 6px; }
+
+.htmlContent strong { font-weight: 700; color: #111827; }
+
+.htmlContent a { color: #2563eb; text-decoration: none; }
+.htmlContent a:hover { text-decoration: underline; }
+
+/* ===== KEY BENEFITS ===== */
+.benefitCard {
+  background: white;
+  padding: 24px 28px;
+  margin-bottom: 12px;
+}
+
+.benefitCardTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px;
+}
+
+.benefitCardTitle span {
+  background-color: #2563eb;
+  color: white;
+  padding: 0 4px;
+}
+
+.benefitCardDesc {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ===== PRODUCT FAMILY ===== */
+.productFamilyHero {
+  background: white;
+  padding: 40px 0;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.productFamilyHeroText {
+  flex: 1;
+}
+
+.productFamilyHeroImage {
+  flex: 0 0 40%;
+  max-height: 200px;
+  overflow: hidden;
+}
+
+.productFamilyHeroImage img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.productFamilyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.productFamilyCard {
+  background: white;
+  padding: 24px;
+  text-decoration: none;
+  display: block;
+  border: 1px solid #e5e7eb;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.productFamilyCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #2563eb;
+}
+
+.productFamilyCardIcon {
+  width: 32px;
+  height: 32px;
+  background: #2563eb;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.productFamilyCardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px;
+}
+
+.productFamilyCardDesc {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+
+.productFamilyCardLink {
+  font-size: 13px;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+/* ===== RESOURCES ===== */
+.resourcesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  padding-top: 32px;
+}
+
+.resourceCard {
+  background: white;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+}
+
+.resourceCardCover {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.resourceCardBody {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.resourceCardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 auto;
+  padding-bottom: 16px;
+}
+
+.resourceCardBtn {
+  display: inline-block;
+  padding: 8px 20px;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.15s;
+}
+
+.resourceCardBtn:hover {
+  background: #2563eb;
+  color: white;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .bannerTitle { font-size: 1.75rem; }
+
+  .contentBlock,
+  .contentBlockReverse {
+    flex-direction: column;
+  }
+
+  .contentBlockImage {
+    flex: none;
+    max-width: 100%;
+  }
+
+  .contentBlockText {
+    padding: 28px 20px;
+  }
+
+  .productFamilyHero {
+    flex-direction: column;
+  }
+
+  .productFamilyHeroImage {
+    flex: none;
+    width: 100%;
+  }
+}

@@ -12,8 +12,10 @@ public record ProductDetailResponse(
         boolean isActive,
         Integer sortOrder,
         UUID parentId,
+        String bannerImageUrl,
         String featuredImageUrl,
         List<ProductTranslationResponse> translations,
+        List<ProductSummaryResponse> children,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {}

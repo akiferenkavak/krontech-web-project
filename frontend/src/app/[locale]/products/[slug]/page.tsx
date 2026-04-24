@@ -1,205 +1,157 @@
-import Link from 'next/link';
 import { type Locale } from '@/i18n/config';
-import { getProductBySlug, type ProductDetail } from '@/lib/api';
-import type { Metadata } from 'next';
+import { getProductBySlug } from '@/lib/api';
+import styles from '@/components/product.module.css';
+import TestimonialSlider from '@/components/ProductTestimonialSlider';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: Locale; slug: string }>;
-}): Promise<Metadata> {
-  const { locale, slug } = await params;
-
-  try {
-    const product = await getProductBySlug(slug, locale);
-    const translation = product.translations?.find(
-      (t) => t.languageCode === locale
-    );
-
-    const title = translation?.seoTitle ?? translation?.title ?? slug;
-    const description = translation?.seoDescription ?? translation?.shortDescription ?? '';
-
-    return {
-      title,
-      description,
-      openGraph: {
-        title,
-        description,
-        url: `https://krontech.com/${locale}/products/${slug}`,
-        siteName: 'Kron',
-        locale: locale === 'tr' ? 'tr_TR' : 'en_US',
-        type: 'website',
-      },
-      alternates: {
-        languages: {
-          'tr': `https://krontech.com/tr/products/${slug}`,
-          'en': `https://krontech.com/en/products/${slug}`,
-        },
-      },
-    };
-  } catch {
-    return { title: slug };
-  }
-}
-
-const t = {
-  tr: {
-    back: '← Ürünlere Dön',
-    notFound: 'Ürün bulunamadı.',
-    noContent: 'Bu ürün için henüz içerik eklenmemiş.',
-    requestDemo: 'Demo Talep Et',
-    downloadDatasheet: 'Datasheet İndir',
-    subProducts: 'Alt Ürünler',
+const pamTestimonials = [
+  {
+    image: 'https://krontech.com/_upload/descriptioncontentimages/kron-anadolu-efes-735x500px.jpg',
+    logo: 'https://krontech.com/_upload/descriptionlogos/Anadolu_Efes_logo__90x65px.png',
+    title: "Anadolu Efes Ensures Data and Access Security with Kron's Cybersecurity Solutions",
+    quote: "With Kron PAM, system and application experts started managing their authorized servers more easily and with visually enriched screens. This has led to increased convenience, speed, and motivation.",
+    author: 'Mehmet Temiz - Information Security Manager',
+    videoUrl: 'https://youtu.be/Ag2dQLxBzdE',
   },
-  en: {
-    back: '← Back to Products',
-    notFound: 'Product not found.',
-    noContent: 'No content available for this product yet.',
-    requestDemo: 'Request a Demo',
-    downloadDatasheet: 'Download Datasheet',
-    subProducts: 'Sub Products',
+  {
+    image: 'https://krontech.com/_upload/descriptioncontentimages/41cd730f55d5f621ee00851a4eae05d2-5f4f74707e4b2.jpg',
+    logo: 'https://krontech.com/_upload/descriptionlogos/0ab0430e8c48dba8b5e644d48008212c-5f4f70e782671.png',
+    title: 'Turkcell Secures Hundreds of Thousands of Devices and Privileged Accounts with Kron PAM',
+    quote: "The most significant advantage Kron PAM provided us was the management of privileged accounts accessing a large number of devices, as well as the use and recording of passwords in all of them, without sharing passwords with anyone else.",
+    author: 'Alper Eryılmaz - Identity Access Management Associate Director',
+    videoUrl: 'https://youtu.be/YrEasJljE-A',
   },
+];
+
+const pamSuccessStory = {
+  image: 'https://krontech.com/_upload/descriptioncontentimages/kron_sekerbank_967x644_1.jpg',
+  title: 'How Sekerbank Assures Data and Access Security?',
+  desc: "Sekerbank, one of Turkey's leading banks with a long history, secures and manages privileged account password information with Kron PAM in order to maximize data and access security.",
+  videoUrl: 'https://youtu.be/wnBRv_CVAQQ',
 };
 
-export default async function ProductDetailPage({
+export default async function ProductSolutionPage({
   params,
 }: {
   params: Promise<{ locale: Locale; slug: string }>;
 }) {
   const { locale, slug } = await params;
-  const copy = t[locale];
+  const isTr = locale === 'tr';
+  const isPam = slug === 'pam-kron';
 
-  let product: ProductDetail | null = null;
-  let error = false;
-
+  let product = null;
   try {
     product = await getProductBySlug(slug, locale);
   } catch {
-    error = true;
-  }
-
-  if (error || !product) {
     return (
-      <main className="max-w-7xl mx-auto px-6 py-20">
-        <Link href={`/${locale}/products`} className="text-sm text-blue-600 hover:underline">
-          {copy.back}
-        </Link>
-        <p className="mt-8 text-gray-500">{copy.notFound}</p>
-      </main>
+      <p style={{ color: '#9ca3af', padding: '40px 0' }}>
+        {isTr ? 'Ürün bulunamadı.' : 'Product not found.'}
+      </p>
     );
   }
 
-  const translation = product.translations?.find(
-    (t) => t.languageCode === locale
-  );
-
-  const jsonLd = translation ? {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
-    'name': translation.title,
-    'description': translation.shortDescription ?? '',
-    'applicationCategory': 'SecurityApplication',
-    'operatingSystem': 'Web',
-    'offers': {
-      '@type': 'Offer',
-      'seller': {
-        '@type': 'Organization',
-        'name': 'Kron',
-        'url': 'https://krontech.com',
-      },
-    },
-  } : null;
+  const translation = product.translations?.find((t) => t.languageCode === locale);
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-16">
-
-      {/* JSON-LD */}
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
-
-      {/* Geri butonu */}
-      <Link href={`/${locale}/products`} className="text-sm text-blue-600 hover:underline">
-        {copy.back}
-      </Link>
-
-      {/* Başlık */}
-      <div className="mt-8 mb-12">
-        <span className="text-sm font-medium text-blue-600 uppercase tracking-wide">
-          {product.category}
-        </span>
-        <h1 className="mt-2 text-4xl font-bold text-gray-900">
-          {translation?.title ?? product.slug}
-        </h1>
-        {translation?.shortDescription && (
-          <p className="mt-4 text-xl text-gray-500 max-w-2xl">
-            {translation.shortDescription}
-          </p>
-        )}
-
-        {/* CTA Butonları */}
-        <div className="mt-8 flex flex-wrap gap-4">
-          <Link
-            href={`/${locale}/request-demo?product=${product.slug}`}
-            className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-800 transition-colors"
-          >
-            {copy.requestDemo}
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
-
-          <button
-            disabled
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-6 py-3 text-sm font-semibold text-gray-500 cursor-not-allowed opacity-60"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            {copy.downloadDatasheet}
-          </button>
-        </div>
-      </div>
-
-      {/* İçerik */}
+    <div>
+      {/* HTML içerik */}
       {translation?.content ? (
         <div
-          className="prose prose-lg max-w-none text-gray-700"
+          className={styles.htmlContent}
+          style={{ paddingTop: '32px' }}
           dangerouslySetInnerHTML={{ __html: translation.content }}
         />
       ) : (
-        <p className="text-gray-400">{copy.noContent}</p>
+        <p style={{ color: '#9ca3af', padding: '40px 0' }}>
+          {isTr ? 'Bu ürün için henüz içerik eklenmemiş.' : 'No content available yet.'}
+        </p>
       )}
 
-      {/* Alt ürünler */}
-      {product.children && product.children.length > 0 && (
-        <section className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            {copy.subProducts}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {product.children.map((child) => (
-              <Link
-                key={child.id}
-                href={`/${locale}/products/${child.slug}`}
-                className="block rounded-xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all"
+      {/* Testimonial slider — full width */}
+      {isPam && <TestimonialSlider testimonials={pamTestimonials} />}
+
+      {/* Şekerbank success story — full width */}
+      {isPam && (
+        <section style={{
+          backgroundColor: 'white',
+          marginLeft: 'calc(-50vw + 50%)',
+          marginRight: 'calc(-50vw + 50%)',
+          width: '100vw',
+          marginTop: '0',
+        }}>
+          <div style={{
+            display: 'flex',
+            minHeight: '420px',
+          }}>
+            {/* Sol — görsel + play */}
+            <div style={{ flex: '0 0 50%', position: 'relative', overflow: 'hidden' }}>
+              <img
+                src={pamSuccessStory.image}
+                alt="Sekerbank"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', minHeight: '420px' }}
+              />
+              <a
+                href={pamSuccessStory.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  position: 'absolute', inset: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
               >
-                <h3 className="font-semibold text-gray-900 hover:text-blue-700">
-                  {child.title ?? child.slug}
-                </h3>
-                {child.shortDescription && (
-                  <p className="mt-2 text-sm text-gray-500 line-clamp-2">
-                    {child.shortDescription}
-                  </p>
-                )}
-              </Link>
-            ))}
+                <div style={{
+                  width: '64px', height: '64px', borderRadius: '50%',
+                  backgroundColor: 'rgba(255,255,255,0.92)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+                }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="#2563eb">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+              </a>
+            </div>
+
+            {/* Sağ — metin */}
+            <div style={{
+              flex: 1,
+              padding: '60px 80px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              backgroundColor: 'white',
+            }}>
+              <h3 style={{
+                fontSize: '26px', fontWeight: 700, color: '#111827',
+                margin: '0 0 20px', lineHeight: 1.4,
+              }}>
+                {pamSuccessStory.title}
+              </h3>
+              <p style={{
+                fontSize: '14px', color: '#6b7280', lineHeight: 1.75,
+                margin: '0 0 32px',
+              }}>
+                {pamSuccessStory.desc}
+              </p>
+              <a
+                href={pamSuccessStory.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  alignSelf: 'flex-start',
+                  padding: '11px 28px',
+                  border: '1px solid #2563eb',
+                  color: '#2563eb',
+                  fontSize: '14px', fontWeight: 500,
+                  textDecoration: 'none',
+                  transition: 'all 0.15s',
+                }}
+              >
+                {isTr ? 'Müşteri Hikayesini İzle' : 'Watch the Customer Story'}
+              </a>
+            </div>
           </div>
         </section>
       )}
-    </main>
+    </div>
   );
 }

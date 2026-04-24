@@ -84,7 +84,19 @@ public class DataInitializer implements CommandLineRunner {
                         "pam-kron", "PAM Kron", "Privileged Access Management", "Ayrıcalıklı erişim yönetimi çözümü",
                         "Protect your data and critical infrastructure with Kron PAM by managing privileged users and sessions.",
                         "Kritik altyapınızı ve verilerinizi yetkili kullanıcı ve oturumları yöneterek koruyun.",
-                        "identity-access"
+                        "identity-access",
+                        // p[7] — howItWorksContentEn
+                        "<div><div style='display:flex;align-items:stretch;background:white;margin-bottom:24px;overflow:hidden'><div style='flex:1;padding:48px 56px;display:flex;flex-direction:column;justify-content:center'><h3 style='font-size:22px;font-weight:700;color:#111827;margin:0 0 16px'>How Kron PAM™ <span style='background:#2563eb;color:white;padding:0 4px'>Works?</span></h3><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0'>This proven solution reduces the implementation time required to set up privileged access control by approximately 80% compared to other solutions and can scale to support tens of thousands of users and accounts, millions of devices and endpoints, and billions of authentication combinations. Kron PAM has a modular and integrated architecture to support a wide range of protocols and features on one platform.</p></div><div style='flex:0 0 50%;max-width:50%;overflow:hidden'><img src='https://krontech.com/_upload/descriptioncontentimages/e3b73db8dd829b200cb9609d6cbbd8ef-5f117b5d40188.jpg' alt='How Kron PAM Works' style='width:100%;height:100%;min-height:280px;object-fit:cover;display:block'></div></div><div style='background:white;margin-bottom:24px;overflow:hidden;padding:24px'><img src='https://krontech.com/_upload/images/single-connect-topology_1.png' alt='Kron PAM Topology' style='max-width:100%;height:auto;display:block;margin:0 auto'></div><div style='background:white;padding:32px 40px;margin-bottom:24px'><h3 style='font-size:18px;font-weight:700;color:#111827;margin:0 0 16px'>Reduce Complexity with <span style='background:#2563eb;color:white;padding:0 4px'>Kron PAM</span></h3><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0 0 12px'>Whether applied to real time communications systems, desktops, mobile devices and collaboration applications, or to connected machines as part of Internet of Things deployments, Kron PAM dramatically reduces the complexity associated with a fully effective, fully compliant solution.</p><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0 0 12px'>Users log on to Kron PAM from a web-based interface to use services such as web-based remote desktop connections to a windows server, web based CLI connections to a network device, password checkout from a secure vault, etc.</p><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0 0 12px'>Users may prefer to connect using their regular native clients instead of the web-based interface. For example, users can use their own CLI client applications (e.g. Putty, SecureCRT, etc.) or Windows native remote desktop application or SQL client (TOAD, DataGrid, Navicat, etc.) applications to connect directly to Kron PAM proxy services.</p><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0'>Kron PAM admins connect via a web-based interface for administration and configuration purposes, such as changing user privileges, creating new policies, adding/removing endpoints.</p></div></div>",
+                        // p[8] — keyBenefitsContentEn
+                        "<div><div style='display:flex;align-items:stretch;background:white;margin-bottom:24px;overflow:hidden'><div style='flex:1;padding:48px 56px;display:flex;flex-direction:column;justify-content:center'><h3 style='font-size:22px;font-weight:700;color:#111827;margin:0 0 16px'>Privileged <span style='background:#2563eb;color:white;padding:0 4px'>Access Management Platform</span> : Kron PAM</h3><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0'>Kron PAM is a comprehensive Privileged Access Management (PAM) software suite designed to prevent internal and external attacks aiming to compromise privileged accounts. Kron PAM is fast to deploy with its modular and agentless architecture. Kron PAM detects, prevents, and records malicious activities in real-time before they occur thanks to its advanced session management properties.</p></div><div style='flex:0 0 50%;max-width:50%;overflow:hidden'><img src='https://krontech.com/_upload/descriptioncontentimages/6bf2789843157925e979e9379f71ce4c-5f0c5f465d6cf.jpg' alt='PAM Platform' style='width:100%;height:100%;min-height:280px;object-fit:cover;display:block'></div></div><div style='background:white;padding:24px 32px;margin-bottom:12px'><h5 style='font-size:16px;font-weight:700;color:#111827;margin:0 0 8px'>Unified <span style='background:#2563eb;color:white;padding:0 4px'>PAM Solution</span></h5><p style='font-size:14px;color:#6b7280;line-height:1.6;margin:0'>The Kron PAM product family strengthens, simplifies and secures the management of privileged accounts, for enterprises and the network operators who serve them. Kron PAM unifies multivendor environments with pre-integrated modules, managing dozens of vendors and hundreds of network elements and servers with a single, universal system.</p></div><div style='background:white;padding:24px 32px;margin-bottom:12px'><h5 style='font-size:16px;font-weight:700;color:#111827;margin:0 0 8px'>Central <span style='background:#2563eb;color:white;padding:0 4px'>Password Management</span></h5><p style='font-size:14px;color:#6b7280;line-height:1.6;margin:0'>The Kron PAM Password Vault is a central secure password vault and helps you to prevent stealing or unauthorized sharing of passwords. Users check out the credentials of a privileged account from the Kron PAM Password Vault and then use the password to connect to target endpoints in order to fulfil their tasks.</p></div><div style='background:white;padding:24px 32px;margin-bottom:12px'><h5 style='font-size:16px;font-weight:700;color:#111827;margin:0 0 8px'><span style='background:#2563eb;color:white;padding:0 4px'>Second Layer</span> of Security</h5><p style='font-size:14px;color:#6b7280;line-height:1.6;margin:0'>The Kron MFA Manager delivers an additional code (one-time-password) to users mobile phones that is required during authentication, which ensures users are who they say they are.</p></div><div style='background:white;padding:24px 32px;margin-bottom:12px'><h5 style='font-size:16px;font-weight:700;color:#111827;margin:0 0 8px'>Unified <span style='background:#2563eb;color:white;padding:0 4px'>Access Management</span></h5><p style='font-size:14px;color:#6b7280;line-height:1.6;margin:0'>Every authentication and command execution attempt of a user is forwarded from the device/server to the Kron PAM Unified Access Manager, enabling many features including single-sign-on, custom/least policy enforcement, indisputably logging, and multi-tenancy, to be centrally managed and delivered.</p></div><div style='background:white;padding:24px 32px;margin-bottom:12px'><h5 style='font-size:16px;font-weight:700;color:#111827;margin:0 0 8px'><span style='background:#2563eb;color:white;padding:0 4px'>Database Access</span> Management</h5><p style='font-size:14px;color:#6b7280;line-height:1.6;margin:0'>The Kron PAM Database Access Manager controls, monitors and audits encrypted database administrator sessions. It supports Oracle, MsSQL, MySQL, Cassandra, Teradata and Hive. Kron PAM Database Access Manager also provides a dynamic data masking feature to prevent access to sensitive data.</p></div><div style='background:white;padding:24px 32px;margin-bottom:12px'><h5 style='font-size:16px;font-weight:700;color:#111827;margin:0 0 8px'>Privileged <span style='background:#2563eb;color:white;padding:0 4px'>Session Control</span></h5><p style='font-size:14px;color:#6b7280;line-height:1.6;margin:0'>The Kron PAM Privileged Session Manager has the capability to control, monitor and audit encrypted administrator sessions. The Man-in-the-middle approach requires no software agents to be deployed on target end points.</p></div></div>",
+                        // p[9] — howItWorksContentTr
+                        "<div><div style='display:flex;align-items:stretch;background:white;margin-bottom:24px;overflow:hidden'><div style='flex:1;padding:48px 56px;display:flex;flex-direction:column;justify-content:center'><h3 style='font-size:22px;font-weight:700;color:#111827;margin:0 0 16px'>Kron PAM™ <span style='background:#2563eb;color:white;padding:0 4px'>Nasıl Çalışır?</span></h3><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0'>Bu kanıtlanmış çözüm, ayrıcalıklı erişim kontrolünü kurmak için gereken uygulama süresini diğer çözümlere kıyasla yaklaşık %80 oranında azaltır. On binlerce kullanıcı ve hesabı, milyonlarca cihaz ve uç noktayı destekleyecek şekilde ölçeklenebilir. Kron PAM, tek bir platformda geniş protokol ve özellik yelpazesini desteklemek için modüler ve entegre bir mimariye sahiptir.</p></div><div style='flex:0 0 50%;max-width:50%;overflow:hidden'><img src='https://krontech.com/_upload/descriptioncontentimages/e3b73db8dd829b200cb9609d6cbbd8ef-5f117b5d40188.jpg' alt='How Kron PAM Works' style='width:100%;height:100%;min-height:280px;object-fit:cover;display:block'></div></div><div style='background:white;margin-bottom:24px;overflow:hidden;padding:24px'><img src='https://krontech.com/_upload/images/single-connect-topology_1.png' alt='Kron PAM Topoloji' style='max-width:100%;height:auto;display:block;margin:0 auto'></div><div style='background:white;padding:32px 40px;margin-bottom:24px'><h3 style='font-size:18px;font-weight:700;color:#111827;margin:0 0 16px'><span style='background:#2563eb;color:white;padding:0 4px'>Kron PAM</span> ile Karmaşıklığı Azaltın</h3><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0 0 12px'>Gerçek zamanlı iletişim sistemlerine, masaüstü bilgisayarlara, mobil cihazlara veya IoT dağıtımlarının bir parçası olarak bağlı makinelere uygulandığında, Kron PAM tam anlamıyla etkili ve uyumlu bir çözümle ilişkili karmaşıklığı önemli ölçüde azaltır.</p><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0'>Kron PAM yöneticileri, kullanıcı ayrıcalıklarını değiştirme, yeni politikalar oluşturma ve uç noktaları ekleme/kaldırma gibi yönetim ve yapılandırma amaçlarıyla web tabanlı bir arayüz üzerinden bağlanır.</p></div></div>",
+                        // p[10] — keyBenefitsContentTr
+                        "<div><div style='display:flex;align-items:stretch;background:white;margin-bottom:24px;overflow:hidden'><div style='flex:1;padding:48px 56px;display:flex;flex-direction:column;justify-content:center'><h3 style='font-size:22px;font-weight:700;color:#111827;margin:0 0 16px'>Ayrıcalıklı <span style='background:#2563eb;color:white;padding:0 4px'>Erişim Yönetimi Platformu</span> : Kron PAM</h3><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0'>Kron PAM, ayrıcalıklı hesapları ele geçirmeye yönelik iç ve dış saldırıları önlemek için tasarlanmış kapsamlı bir PAM yazılım paketidir. Modüler ve ajanssız mimarisiyle hızlı dağıtım sağlar. Gelişmiş oturum yönetimi özellikleri sayesinde kötü niyetli faaliyetleri gerçek zamanlı olarak tespit eder, önler ve kaydeder.</p></div><div style='flex:0 0 50%;max-width:50%;overflow:hidden'><img src='https://krontech.com/_upload/descriptioncontentimages/6bf2789843157925e979e9379f71ce4c-5f0c5f465d6cf.jpg' alt='PAM Platformu' style='width:100%;height:100%;min-height:280px;object-fit:cover;display:block'></div></div><div style='background:white;padding:24px 32px;margin-bottom:12px'><h5 style='font-size:16px;font-weight:700;color:#111827;margin:0 0 8px'>Birleşik <span style='background:#2563eb;color:white;padding:0 4px'>PAM Çözümü</span></h5><p style='font-size:14px;color:#6b7280;line-height:1.6;margin:0'>Kron PAM ürün ailesi, işletmeler ve onlara hizmet veren ağ operatörleri için ayrıcalıklı hesapların yönetimini güçlendirir, basitleştirir ve güvence altına alır.</p></div><div style='background:white;padding:24px 32px;margin-bottom:12px'><h5 style='font-size:16px;font-weight:700;color:#111827;margin:0 0 8px'>Merkezi <span style='background:#2563eb;color:white;padding:0 4px'>Şifre Yönetimi</span></h5><p style='font-size:14px;color:#6b7280;line-height:1.6;margin:0'>Kron PAM Şifre Kasası, şifrelerin çalınmasını veya yetkisiz paylaşımını önlemenize yardımcı olan merkezi bir güvenli şifre kasasıdır.</p></div><div style='background:white;padding:24px 32px;margin-bottom:12px'><h5 style='font-size:16px;font-weight:700;color:#111827;margin:0 0 8px'><span style='background:#2563eb;color:white;padding:0 4px'>İkinci Katman</span> Güvenlik</h5><p style='font-size:14px;color:#6b7280;line-height:1.6;margin:0'>Kron MFA Yöneticisi, kimlik doğrulama sırasında gerekli olan ek bir kodu (tek kullanımlık şifre) kullanıcıların cep telefonlarına iletir.</p></div><div style='background:white;padding:24px 32px;margin-bottom:12px'><h5 style='font-size:16px;font-weight:700;color:#111827;margin:0 0 8px'>Ayrıcalıklı <span style='background:#2563eb;color:white;padding:0 4px'>Oturum Kontrolü</span></h5><p style='font-size:14px;color:#6b7280;line-height:1.6;margin:0'>Kron PAM Ayrıcalıklı Oturum Yöneticisi, şifreli yönetici oturumlarını kontrol etme, izleme ve denetleme kapasitesine sahiptir.</p></div></div>",
+                        // p[11] — productFamilyContentEn
+                        "<div style='display:flex;align-items:stretch;background:white;margin-bottom:24px;overflow:hidden'><div style='flex:1;padding:48px 56px;display:flex;flex-direction:column;justify-content:center'><h3 style='font-size:22px;font-weight:700;color:#111827;margin:0 0 16px'>Unified <span style='background:#2563eb;color:white;padding:0 4px'>Access Management</span></h3><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0'>The Kron PAM product family strengthens, simplifies and secures the management of privileged accounts, for enterprises and network operators. Kron PAM unifies multivendor environments with pre-integrated modules managing dozens of vendors and hundreds of network elements and servers with a single, universal system.</p></div><div style='flex:0 0 50%;max-width:50%;overflow:hidden'><img src='https://krontech.com/_upload/descriptioncontentimages/37666f14b75a976dc438845820d9b727-5f0ba66747010.jpg' alt='Unified Access Management' style='width:100%;height:100%;min-height:280px;object-fit:cover;display:block'></div></div>",
+                        // p[12] — productFamilyContentTr
+                        "<div style='display:flex;align-items:stretch;background:white;margin-bottom:24px;overflow:hidden'><div style='flex:1;padding:48px 56px;display:flex;flex-direction:column;justify-content:center'><h3 style='font-size:22px;font-weight:700;color:#111827;margin:0 0 16px'>Birleşik <span style='background:#2563eb;color:white;padding:0 4px'>Erişim Yönetimi</span></h3><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0'>Kron PAM ürün ailesi, işletmeler ve ağ operatörleri için ayrıcalıklı hesapların yönetimini güçlendirir, basitleştirir ve güvence altına alır. Kron PAM, önceden entegre modülleriyle çok satıcılı ortamları birleştirir ve tek bir evrensel sistemle düzinelerce satıcıyı ve yüzlerce ağ öğesini ve sunucuyu yönetir.</p></div><div style='flex:0 0 50%;max-width:50%;overflow:hidden'><img src='https://krontech.com/_upload/descriptioncontentimages/37666f14b75a976dc438845820d9b727-5f0ba66747010.jpg' alt='Birleşik Erişim Yönetimi' style='width:100%;height:100%;min-height:280px;object-fit:cover;display:block'></div></div>"
                 },
                 {
                         "password-vault", "Password Vault", "Password Vault", "Şifre Kasası",
@@ -154,6 +166,7 @@ public class DataInitializer implements CommandLineRunner {
             product.setCategory((String) p[6]);
             product.setActive(true);
             product.setSortOrder(0);
+            product.setBannerImageUrl("https://krontech.com/_upload/bannerimages/7686dbf5cbd52b04682ab9420e26ca9a-5f0866e1014a4.jpg");
             product = productRepository.save(product);
 
             ProductTranslation ptTr = new ProductTranslation();
@@ -170,9 +183,34 @@ public class DataInitializer implements CommandLineRunner {
             ptEn.setLanguage(en);
             ptEn.setTitle((String) p[2]);
             ptEn.setShortDescription((String) p[4]);
+            ptEn.setContent("<div><div style='display:flex;align-items:stretch;background:white;margin-bottom:24px;overflow:hidden'><div style='flex:1;padding:48px 56px;display:flex;flex-direction:column;justify-content:center'><h3 style='font-size:22px;font-weight:700;color:#111827;margin:0 0 16px'>Protect What You <span style='background:#2563eb;color:white;padding:0 4px'>Connect™</span></h3><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0'>The Kron PAM™ Privileged Access Management Suite is known as the fastest to deploy and the most secure PAM solution in the marketplace, delivering IT operational security and efficiency to Enterprises and Telcos globally.</p></div><div style='flex:0 0 50%;max-width:50%;overflow:hidden'><img src='https://krontech.com/_upload/descriptioncontentimages/6b23a469ed2ef99a40185918c987e614-5f08681d85fdd.jpg' alt='Protect What You Connect' style='width:100%;height:100%;min-height:280px;object-fit:cover;display:block'></div></div><div style='display:flex;flex-direction:row-reverse;align-items:stretch;background:white;margin-bottom:24px;overflow:hidden'><div style='flex:1;padding:48px 56px;display:flex;flex-direction:column;justify-content:center'><h3 style='font-size:22px;font-weight:700;color:#111827;margin:0 0 16px'>Unified Management of <span style='background:#2563eb;color:white;padding:0 4px'>Privileged Access Control</span></h3><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0'>Kron PAM enables IT managers and network admins to efficiently secure the access, control configurations and indisputably record all activities in the data center or network infrastructure, in which any breach in privileged accounts access might have material impact on business continuity.</p></div><div style='flex:0 0 50%;max-width:50%;overflow:hidden'><img src='https://krontech.com/_upload/descriptioncontentimages/01578620c7801e4792e867d3cb325b80-5f1182c2b4149_1.jpg' alt='Privileged Access Control' style='width:100%;height:100%;min-height:280px;object-fit:cover;display:block'></div></div><div style='display:flex;align-items:stretch;background:white;margin-bottom:24px;overflow:hidden'><div style='flex:1;padding:48px 56px;display:flex;flex-direction:column;justify-content:center'><h3 style='font-size:22px;font-weight:700;color:#111827;margin:0 0 16px'>Regulatory <span style='background:#2563eb;color:white;padding:0 4px'>Compliance</span></h3><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0'>Kron PAM provides tools, capabilities, indisputable log records and audit trails to help organizations comply with regulations including ISO 27001, ISO 31000:2009, KVKK, PCI DSS, EPDK, SOX, HIPAA, GDPR in highly regulated industries like finance, energy, health, and telecommunications.</p></div><div style='flex:0 0 50%;max-width:50%;overflow:hidden'><img src='https://krontech.com/_upload/descriptioncontentimages/single-connect-pam-compliance-2_1.jpg' alt='Regulatory Compliance' style='width:100%;height:100%;min-height:280px;object-fit:cover;display:block'></div></div><div style='display:flex;flex-direction:row-reverse;align-items:stretch;background:white;margin-bottom:24px;overflow:hidden'><div style='flex:1;padding:48px 56px;display:flex;flex-direction:column;justify-content:center'><h3 style='font-size:22px;font-weight:700;color:#111827;margin:0 0 16px'>Stronger, Simpler and <span style='background:#2563eb;color:white;padding:0 4px'>More Secure</span></h3><p style='font-size:15px;color:#4b5563;line-height:1.7;margin:0'>Cloud-native and designed to support Software Defined Networks today and in the future, Kron PAM prevents and detects breaches, maintains individual accountability, and increases operational efficiency significantly by managing credentials and delegating privileged actions.</p></div><div style='flex:0 0 50%;max-width:50%;overflow:hidden'><img src='https://krontech.com/_upload/descriptioncontentimages/6d2394910f50e9de1439a8089b4a91a4-5f0ce51ed6e28.jpg' alt='More Secure' style='width:100%;height:100%;min-height:280px;object-fit:cover;display:block'></div></div></div>");
             ptEn.setStatus(ContentStatus.PUBLISHED);
             ptEn.setPublishedAt(LocalDateTime.now());
+            ptEn.setHowItWorksContent(p.length > 7 ? (String) p[7] : null);
+            ptEn.setKeyBenefitsContent(p.length > 8 ? (String) p[8] : null);
+            ptTr.setHowItWorksContent(p.length > 9 ? (String) p[9] : null);
+            ptTr.setKeyBenefitsContent(p.length > 10 ? (String) p[10] : null);
+            ptEn.setProductFamilyContent(p.length > 11 ? (String) p[11] : null);
+            ptTr.setProductFamilyContent(p.length > 12 ? (String) p[12] : null);
             productTranslationRepository.save(ptEn);
+        }
+
+        Product pamKron = productRepository.findBySlug("pam-kron").orElse(null);
+        if (pamKron != null) {
+            List<String> pamChildren = List.of(
+                    "password-vault",
+                    "privileged-session-manager",
+                    "multi-factor-authentication",
+                    "endpoint-privileged-management",
+                    "user-behavior-analytics",
+                    "unified-access-manager"
+            );
+            for (String childSlug : pamChildren) {
+                productRepository.findBySlug(childSlug).ifPresent(child -> {
+                    child.setParent(pamKron);
+                    productRepository.save(child);
+                });
+            }
         }
 
         log.info("Seed products created.");
@@ -397,35 +435,74 @@ Object[][] posts = {
     Language tr = languageRepository.findByCode("tr").orElseThrow();
     Language en = languageRepository.findByCode("en").orElseThrow();
 
-    Object[][] resources = {
-        {
-            "kron-pam-datasheet", "datasheet",
-            "Kron PAM Datasheet", "Kron PAM Datasheet",
-            "Kron PAM ürününün teknik özelliklerini ve özellik listesini içeren datasheet.",
-            "Technical specifications and feature list for Kron PAM.",
-            "pam-kron"
-        },
-        {
-            "zero-trust-whitepaper", "whitepaper",
-            "Zero Trust Güvenlik Mimarisi", "Zero Trust Security Architecture",
-            "Kurumsal ağlarda Zero Trust mimarisinin nasıl uygulanacağını anlatan teknik rehber.",
-            "A technical guide on implementing Zero Trust architecture in enterprise networks.",
-            null
-        },
-        {
-            "pam-case-study", "case-study",
-            "Telekom Sektöründe PAM Uygulaması", "PAM Implementation in Telecom",
-            "Büyük bir telekom operatörünün PAM çözümüyle insider threat'leri nasıl engellediği.",
-            "How a major telecom operator prevented insider threats with PAM solution.",
-            "pam-kron"
-        },
-    };
+        Object[][] resources = {
+                {
+                        "kron-pam-datasheet", "datasheet",
+                        "Kron PAM Datasheet", "Kron PAM Datasheet",
+                        "Kron PAM ürününün teknik özelliklerini ve özellik listesini içeren datasheet.",
+                        "Technical specifications and feature list for Kron PAM.",
+                        "pam-kron",
+                        "https://krontech.com/_upload/listimages/kron_pam_thumb.png"
+                },
+                {
+                        "password-vault-datasheet", "datasheet",
+                        "Password Vault Datasheet", "Password Vault Datasheet",
+                        "Şifre Kasası çözümünün teknik özelliklerini içeren datasheet.",
+                        "Technical specifications for the Password Vault solution.",
+                        "pam-kron",
+                        "https://krontech.com/_upload/listimages/thumnail_datasheet_password_vault.jpg"
+                },
+                {
+                        "privileged-session-manager-datasheet", "datasheet",
+                        "Session Manager Datasheet", "Session Manager Datasheet",
+                        "Ayrıcalıklı Oturum Yöneticisi çözümünün teknik özelliklerini içeren datasheet.",
+                        "Technical specifications for the Privileged Session Manager solution.",
+                        "pam-kron",
+                        "https://krontech.com/_upload/listimages/thumnail_datasheet_psm.jpg"
+                },
+                {
+                        "mfa-datasheet", "datasheet",
+                        "MFA Datasheet", "Multi-Factor Authentication Datasheet",
+                        "Çok Faktörlü Kimlik Doğrulama çözümünün teknik özelliklerini içeren datasheet.",
+                        "Technical specifications for the Multi-Factor Authentication solution.",
+                        "pam-kron",
+                        "https://krontech.com/_upload/listimages/thumnail_datasheet_Kron_MFA.jpg"
+                },
+                {
+                        "unified-access-manager-datasheet", "datasheet",
+                        "UAM Datasheet", "Unified Access Manager Datasheet",
+                        "Birleşik Erişim Yöneticisi çözümünün teknik özelliklerini içeren datasheet.",
+                        "Technical specifications for the Unified Access Manager solution.",
+                        "pam-kron",
+                        "https://krontech.com/_upload/listimages/thumnail_datasheet_Kron_UAM.jpg"
+                },
+        };
 
     for (Object[] r : resources) {
         Resource resource = new Resource();
         resource.setSlug((String) r[0]);
         resource.setType((String) r[1]);
         resource.setActive(true);
+
+
+        // featured image
+        if (r.length > 7 && r[7] != null) {
+            Media media = new Media();
+            media.setUrl((String) r[7]);
+            media.setFilename((String) r[0] + ".jpg");
+            media.setMimeType("image/jpeg");
+            media.setAltText((String) r[3]);
+            media.setUploadedBy(userRepository.findByEmail(adminEmail).orElseThrow());
+            media = mediaRepository.save(media);
+            resource.setFeaturedImage(media);
+        }
+
+        // relatedProduct bağla
+        if (r[6] != null) {
+            productRepository.findBySlug((String) r[6]).ifPresent(resource::setRelatedProduct);
+        }
+
+
         resource = resourceRepository.save(resource);
 
         ResourceTranslation rtTr = new ResourceTranslation();

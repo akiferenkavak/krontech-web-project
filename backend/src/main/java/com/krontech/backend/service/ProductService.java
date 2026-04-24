@@ -173,6 +173,9 @@ public class ProductService {
         translation.setIndexPage(request.indexPage());
         translation.setStructuredData(request.structuredData());
         translation.setScheduledAt(request.scheduledAt());
+        translation.setHowItWorksContent(request.howItWorksContent());
+        translation.setKeyBenefitsContent(request.keyBenefitsContent());
+        translation.setProductFamilyContent(request.productFamilyContent());
 
         ContentStatus status = request.status() != null ? request.status() : ContentStatus.DRAFT;
         translation.setStatus(status);
@@ -227,6 +230,12 @@ public class ProductService {
                 .map(this::mapTranslation)
                 .toList();
 
+        List<ProductSummaryResponse> children = product.getChildren()
+                .stream()
+                .filter(Product::isActive)
+                .map(c -> mapToSummary(c, "en")) // default lang
+                .toList();
+
         return new ProductDetailResponse(
                 product.getId(),
                 product.getSlug(),
@@ -234,8 +243,10 @@ public class ProductService {
                 product.isActive(),
                 product.getSortOrder(),
                 product.getParent() != null ? product.getParent().getId() : null,
+                product.getBannerImageUrl(),
                 product.getFeaturedImage() != null ? product.getFeaturedImage().getUrl() : null,
                 translations,
+                children,
                 product.getCreatedAt(),
                 product.getUpdatedAt()
         );
@@ -258,7 +269,10 @@ public class ProductService {
                 t.getStructuredData(),
                 t.getStatus(),
                 t.getPublishedAt(),
-                t.getScheduledAt()
+                t.getScheduledAt(),
+                t.getHowItWorksContent(),
+                t.getKeyBenefitsContent(),
+                t.getProductFamilyContent()
         );
     }
 }
