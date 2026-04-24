@@ -15,7 +15,7 @@ export default async function ProductResourcesPage({
 
   try {
     const all = await getResources(locale);
-    resources = all.filter((r) => r.relatedProductSlug === slug);
+    resources = all.filter((r) => r.relatedProductSlug === slug && r.isActive !== false);
   } catch {
     resources = [];
   }

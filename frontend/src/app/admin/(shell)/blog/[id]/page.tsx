@@ -20,7 +20,7 @@ interface BlogPost {
   authorName: string; translations: Translation[];
 }
 
-function TipTapToolbar({ editor }: { editor: ReturnType<typeof useEditor> }) {
+function TipTapToolbar({ editor }: { editor: ReturnType<typeof useEditor> | null }) {
   if (!editor) return null;
   const btn = (action: () => void, label: string, active?: boolean) => (
     <button type="button" onClick={action} style={{

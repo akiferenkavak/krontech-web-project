@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor, EditorContent, Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import LinkExt from '@tiptap/extension-link';
 import ImageExt from '@tiptap/extension-image';
@@ -37,11 +37,12 @@ interface Product {
   bannerImageUrl: string | null;
   featuredImageUrl: string | null;
   translations: Translation[];
+  sortOrder?: number;
 }
 
 type ContentTab = 'solution' | 'how-it-works' | 'key-benefits' | 'product-family';
 
-function Toolbar({ editor }: { editor: ReturnType<typeof useEditor> }) {
+function Toolbar({ editor }: { editor: Editor | null }) {
   if (!editor) return null;
   const btn = (action: () => void, label: string, active?: boolean) => (
     <button type="button" onClick={action} style={{

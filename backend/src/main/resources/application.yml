@@ -40,3 +40,9 @@ app:
   cookie:
     secure: true
     max-age-seconds: 86400
+
+
+logging:
+  level:
+    com.krontech: DEBUG
+    org.springframework.web: DEBUG

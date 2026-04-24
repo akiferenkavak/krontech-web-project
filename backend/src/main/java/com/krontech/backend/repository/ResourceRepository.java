@@ -40,4 +40,19 @@ public interface ResourceRepository extends JpaRepository<Resource, UUID> {
         @Param("type") String type,
         @Param("langCode") String langCode
     );
+
+
+    @Query("""
+        SELECT r FROM Resource r
+        LEFT JOIN FETCH r.translations t
+        LEFT JOIN FETCH t.language
+        LEFT JOIN FETCH r.relatedProduct
+        LEFT JOIN FETCH r.featuredImage
+        LEFT JOIN FETCH r.file
+        ORDER BY r.createdAt DESC
+        """)
+    List<Resource> findAllWithTranslations();
+
+
+
 }

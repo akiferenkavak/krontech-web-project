@@ -37,6 +37,7 @@ public class ResourceService {
                 resource.getId(),
                 resource.getSlug(),
                 resource.getType(),
+                resource.isActive(),
                 translation != null ? translation.getTitle() : resource.getSlug(),
                 translation != null ? translation.getDescription() : null,
                 resource.getFile() != null ? resource.getFile().getUrl() : null,
