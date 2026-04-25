@@ -9,6 +9,9 @@ import com.krontech.backend.entity.*;
 import com.krontech.backend.exception.ResourceNotFoundException;
 import com.krontech.backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +28,7 @@ public class ProductService {
     private final LanguageRepository languageRepository;
     private final MediaRepository mediaRepository;
 
-    // --- Tüm ürünleri liste olarak getir (hafif DTO) ---
+    @Cacheable(value = "products", key = "#langCode")
     @Transactional(readOnly = true)
     public List<ProductSummaryResponse> getAllProducts(String langCode) {
         return productRepository.findAll()
@@ -34,7 +37,7 @@ public class ProductService {
                 .toList();
     }
 
-    // --- Sadece üst seviye kategorileri getir ---
+    @Cacheable(value = "products-root", key = "#langCode")
     @Transactional(readOnly = true)
     public List<ProductSummaryResponse> getRootProducts(String langCode) {
         return productRepository.findByParentIsNullAndIsActiveTrue()
@@ -43,7 +46,7 @@ public class ProductService {
                 .toList();
     }
 
-    // --- Belirli bir kategorinin alt ürünleri ---
+    @Cacheable(value = "products-children", key = "#parentId + '-' + #langCode")
     @Transactional(readOnly = true)
     public List<ProductSummaryResponse> getChildProducts(UUID parentId, String langCode) {
         if (!productRepository.existsById(parentId)) {
@@ -55,7 +58,7 @@ public class ProductService {
                 .toList();
     }
 
-    // --- ID ile detay getir ---
+    @Cacheable(value = "product-detail", key = "#id")
     @Transactional(readOnly = true)
     public ProductDetailResponse getProductById(UUID id) {
         Product product = productRepository.findByIdWithTranslations(id)
@@ -63,7 +66,7 @@ public class ProductService {
         return mapToDetail(product);
     }
 
-    // --- Slug ile detay getir (frontend için asıl kullanılan endpoint) ---
+    @Cacheable(value = "product-slug", key = "#slug")
     @Transactional(readOnly = true)
     public ProductDetailResponse getProductBySlug(String slug) {
         Product product = productRepository.findBySlugWithTranslations(slug)
@@ -71,7 +74,6 @@ public class ProductService {
         return mapToDetail(product);
     }
 
-    // --- Yeni ürün oluştur ---
     @Transactional
     public ProductDetailResponse createProduct(ProductCreateRequest request) {
         if (productRepository.existsBySlug(request.slug())) {
@@ -100,7 +102,13 @@ public class ProductService {
         return mapToDetail(saved);
     }
 
-    // --- Ürün güncelle ---
+    @Caching(evict = {
+        @CacheEvict(value = "products", allEntries = true),
+        @CacheEvict(value = "products-root", allEntries = true),
+        @CacheEvict(value = "products-children", allEntries = true),
+        @CacheEvict(value = "product-detail", key = "#id"),
+        @CacheEvict(value = "product-slug", allEntries = true)
+    })
     @Transactional
     public ProductDetailResponse updateProduct(UUID id, ProductCreateRequest request) {
         Product product = productRepository.findById(id)
@@ -133,20 +141,13 @@ public class ProductService {
         return mapToDetail(productRepository.save(product));
     }
 
-    // --- Ürün sil ---
-    @Transactional
-    public void deleteProduct(UUID id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ürün bulunamadı! ID: " + id));
-
-        if (!product.getChildren().isEmpty()) {
-            throw new IllegalStateException("Alt ürünleri olan bir ürün silinemez. Önce alt ürünleri silin veya taşıyın.");
-        }
-
-        productRepository.delete(product);
-    }
-
-    // --- Translation ekle veya güncelle (upsert) ---
+    @Caching(evict = {
+        @CacheEvict(value = "products", allEntries = true),
+        @CacheEvict(value = "products-root", allEntries = true),
+        @CacheEvict(value = "products-children", allEntries = true),
+        @CacheEvict(value = "product-detail", key = "#productId"),
+        @CacheEvict(value = "product-slug", allEntries = true)
+    })
     @Transactional
     public ProductDetailResponse upsertTranslation(UUID productId, ProductTranslationRequest request) {
         Product product = productRepository.findById(productId)
@@ -155,7 +156,6 @@ public class ProductService {
         Language language = languageRepository.findById(request.languageId())
                 .orElseThrow(() -> new ResourceNotFoundException("Dil bulunamadı! ID: " + request.languageId()));
 
-        // Var olan translation'ı bul veya yeni oluştur
         ProductTranslation translation = translationRepository
                 .findByProductIdAndLanguageCode(productId, language.getCode())
                 .orElse(ProductTranslation.builder()
@@ -181,7 +181,6 @@ public class ProductService {
         ContentStatus status = request.status() != null ? request.status() : ContentStatus.DRAFT;
         translation.setStatus(status);
 
-        // PUBLISHED'a geçişte publishedAt otomatik set edilir
         if (status == ContentStatus.PUBLISHED && translation.getPublishedAt() == null) {
             translation.setPublishedAt(LocalDateTime.now());
         }
@@ -191,7 +190,29 @@ public class ProductService {
         return mapToDetail(productRepository.findByIdWithTranslations(productId).orElseThrow());
     }
 
-    // --- Translation sil ---
+    @Caching(evict = {
+        @CacheEvict(value = "products", allEntries = true),
+        @CacheEvict(value = "products-root", allEntries = true),
+        @CacheEvict(value = "product-detail", key = "#id"),
+        @CacheEvict(value = "product-slug", allEntries = true)
+    })
+    @Transactional
+    public void deleteProduct(UUID id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ürün bulunamadı! ID: " + id));
+
+        if (!product.getChildren().isEmpty()) {
+            throw new IllegalStateException("Alt ürünleri olan bir ürün silinemez.");
+        }
+
+        productRepository.delete(product);
+    }
+
+    @Caching(evict = {
+        @CacheEvict(value = "products", allEntries = true),
+        @CacheEvict(value = "product-detail", key = "#productId"),
+        @CacheEvict(value = "product-slug", allEntries = true)
+    })
     @Transactional
     public void deleteTranslation(UUID productId, UUID translationId) {
         ProductTranslation translation = translationRepository.findById(translationId)
@@ -234,7 +255,7 @@ public class ProductService {
         List<ProductSummaryResponse> children = product.getChildren()
                 .stream()
                 .filter(Product::isActive)
-                .map(c -> mapToSummary(c, "en")) // default lang
+                .map(c -> mapToSummary(c, "en"))
                 .toList();
 
         return new ProductDetailResponse(

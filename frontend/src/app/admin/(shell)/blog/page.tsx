@@ -26,7 +26,8 @@ export default function AdminBlogListPage() {
         credentials: 'include',
       });
       const data = await res.json();
-      setPosts(data.content ?? data ?? []);
+      const posts = Array.isArray(data) ? data : (data.content ?? []);
+      setPosts(posts);
     } catch {
       setPosts([]);
     } finally {

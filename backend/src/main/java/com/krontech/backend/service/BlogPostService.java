@@ -7,6 +7,9 @@ import com.krontech.backend.entity.*;
 import com.krontech.backend.exception.ResourceNotFoundException;
 import com.krontech.backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +32,7 @@ public class BlogPostService {
     private final MediaRepository mediaRepository;
     private final UserRepository userRepository;
 
-    // --- Yayınlanmış yazıları sayfalanmış getir ---
+    @Cacheable(value = "blog-posts", key = "#langCode + '-' + #page + '-' + #size")
     @Transactional(readOnly = true)
     public PagedResponse<BlogPostSummaryResponse> getPublishedPosts(
             String langCode, int page, int size) {
@@ -53,7 +56,7 @@ public class BlogPostService {
         );
     }
 
-    // --- Tag'e göre filtreli liste ---
+    @Cacheable(value = "blog-posts-tag", key = "#tagSlug + '-' + #langCode + '-' + #page")
     @Transactional(readOnly = true)
     public PagedResponse<BlogPostSummaryResponse> getPostsByTag(
             String tagSlug, String langCode, int page, int size) {
@@ -77,7 +80,7 @@ public class BlogPostService {
         );
     }
 
-    // --- Slug ile detay getir ---
+    @Cacheable(value = "blog-post-slug", key = "#slug")
     @Transactional(readOnly = true)
     public BlogPostDetailResponse getPostBySlug(String slug) {
         BlogPost post = blogPostRepository.findBySlugWithDetails(slug)
@@ -85,6 +88,7 @@ public class BlogPostService {
         return mapToDetail(post);
     }
 
+    @Cacheable(value = "blog-posts-featured", key = "#langCode")
     @Transactional(readOnly = true)
     public List<BlogPostSummaryResponse> getFeaturedPosts(String langCode) {
         return blogPostRepository.findFeaturedByLanguage(langCode)
@@ -93,7 +97,7 @@ public class BlogPostService {
                 .toList();
     }
 
-    // --- ID ile detay getir ---
+    @Cacheable(value = "blog-post-detail", key = "#id")
     @Transactional(readOnly = true)
     public BlogPostDetailResponse getPostById(UUID id) {
         BlogPost post = blogPostRepository.findByIdWithDetails(id)
@@ -101,15 +105,18 @@ public class BlogPostService {
         return mapToDetail(post);
     }
 
-    // --- Yeni post oluştur ---
+    @Caching(evict = {
+        @CacheEvict(value = "blog-posts", allEntries = true),
+        @CacheEvict(value = "blog-posts-featured", allEntries = true),
+        @CacheEvict(value = "blog-posts-tag", allEntries = true)
+    })
     @Transactional
     public BlogPostDetailResponse createPost(BlogPostCreateRequest request) {
         if (blogPostRepository.existsBySlug(request.slug())) {
             throw new IllegalArgumentException("Bu slug zaten kullanımda: " + request.slug());
         }
 
-        BlogPost.BlogPostBuilder builder = BlogPost.builder()
-                .slug(request.slug());
+        BlogPost.BlogPostBuilder builder = BlogPost.builder().slug(request.slug());
 
         if (request.authorId() != null) {
             User author = userRepository.findById(request.authorId())
@@ -125,36 +132,38 @@ public class BlogPostService {
 
         BlogPost post = builder.build();
 
-        // Tag'leri slug listesinden çöz ve ata
         if (request.tagSlugs() != null && !request.tagSlugs().isEmpty()) {
-            List<Tag> tags = resolveTags(request.tagSlugs());
-            post.setTags(tags);
+            post.setTags(resolveTags(request.tagSlugs()));
         }
 
         BlogPost saved = blogPostRepository.save(post);
         return mapToDetail(blogPostRepository.findByIdWithDetails(saved.getId()).orElseThrow());
     }
 
-    // --- Post güncelle ---
+    @Caching(evict = {
+        @CacheEvict(value = "blog-posts", allEntries = true),
+        @CacheEvict(value = "blog-posts-featured", allEntries = true),
+        @CacheEvict(value = "blog-posts-tag", allEntries = true),
+        @CacheEvict(value = "blog-post-detail", key = "#id"),
+        @CacheEvict(value = "blog-post-slug", allEntries = true)
+    })
     @Transactional
     public BlogPostDetailResponse updatePost(UUID id, BlogPostCreateRequest request) {
         BlogPost post = blogPostRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Blog yazısı bulunamadı! ID: " + id));
 
+        if (request.featuredImageUrl() != null && !request.featuredImageUrl().isBlank()) {
+            Media media = new Media();
+            media.setUrl(request.featuredImageUrl());
+            media.setFilename(request.slug() + "-featured");
+            media.setMimeType("image/jpeg");
+            User admin = userRepository.findByEmail("admin@krontech.com")
+                    .orElse(userRepository.findAll().get(0));
+            media.setUploadedBy(admin);
+            media = mediaRepository.save(media);
+            post.setFeaturedImage(media);
+        }
 
-
-if (request.featuredImageUrl() != null && !request.featuredImageUrl().isBlank()) {
-    Media media = new Media();
-    media.setUrl(request.featuredImageUrl());
-    media.setFilename(request.slug() + "-featured");
-    media.setMimeType("image/jpeg");
-    User admin = userRepository.findByEmail("admin@krontech.com")
-            .orElse(userRepository.findAll().get(0)); // fallback
-    media.setUploadedBy(admin);
-    media = mediaRepository.save(media);
-    post.setFeaturedImage(media);
-}
-                
         if (!post.getSlug().equals(request.slug()) && blogPostRepository.existsBySlug(request.slug())) {
             throw new IllegalArgumentException("Bu slug zaten kullanımda: " + request.slug());
         }
@@ -181,7 +190,13 @@ if (request.featuredImageUrl() != null && !request.featuredImageUrl().isBlank())
         return mapToDetail(blogPostRepository.findByIdWithDetails(id).orElseThrow());
     }
 
-    // --- Post sil ---
+    @Caching(evict = {
+        @CacheEvict(value = "blog-posts", allEntries = true),
+        @CacheEvict(value = "blog-posts-featured", allEntries = true),
+        @CacheEvict(value = "blog-posts-tag", allEntries = true),
+        @CacheEvict(value = "blog-post-detail", key = "#id"),
+        @CacheEvict(value = "blog-post-slug", allEntries = true)
+    })
     @Transactional
     public void deletePost(UUID id) {
         BlogPost post = blogPostRepository.findById(id)
@@ -189,7 +204,12 @@ if (request.featuredImageUrl() != null && !request.featuredImageUrl().isBlank())
         blogPostRepository.delete(post);
     }
 
-    // --- Translation upsert ---
+    @Caching(evict = {
+        @CacheEvict(value = "blog-posts", allEntries = true),
+        @CacheEvict(value = "blog-posts-featured", allEntries = true),
+        @CacheEvict(value = "blog-post-detail", key = "#postId"),
+        @CacheEvict(value = "blog-post-slug", allEntries = true)
+    })
     @Transactional
     public BlogPostDetailResponse upsertTranslation(UUID postId, BlogPostTranslationRequest request) {
         BlogPost post = blogPostRepository.findById(postId)
@@ -224,7 +244,11 @@ if (request.featuredImageUrl() != null && !request.featuredImageUrl().isBlank())
         return mapToDetail(blogPostRepository.findByIdWithDetails(postId).orElseThrow());
     }
 
-    // --- Translation sil ---
+    @Caching(evict = {
+        @CacheEvict(value = "blog-posts", allEntries = true),
+        @CacheEvict(value = "blog-post-detail", key = "#postId"),
+        @CacheEvict(value = "blog-post-slug", allEntries = true)
+    })
     @Transactional
     public void deleteTranslation(UUID postId, UUID translationId) {
         BlogPostTranslation translation = translationRepository.findById(translationId)
@@ -237,7 +261,6 @@ if (request.featuredImageUrl() != null && !request.featuredImageUrl().isBlank())
         translationRepository.delete(translation);
     }
 
-    // --- Tüm tag'leri getir ---
     @Transactional(readOnly = true)
     public List<TagResponse> getAllTags() {
         return tagRepository.findAllWithTranslations()
@@ -246,7 +269,6 @@ if (request.featuredImageUrl() != null && !request.featuredImageUrl().isBlank())
                 .toList();
     }
 
-    // --- Tag oluştur ---
     @Transactional
     public TagResponse createTag(String slug) {
         if (tagRepository.existsBySlug(slug)) {
@@ -255,8 +277,6 @@ if (request.featuredImageUrl() != null && !request.featuredImageUrl().isBlank())
         Tag tag = Tag.builder().slug(slug).build();
         return mapTag(tagRepository.save(tag));
     }
-
-    // --- YARDIMCI METOTLAR ---
 
     private List<Tag> resolveTags(List<String> slugs) {
         List<Tag> tags = new ArrayList<>();
@@ -268,10 +288,7 @@ if (request.featuredImageUrl() != null && !request.featuredImageUrl().isBlank())
         return tags;
     }
 
-    // --- MAPPER'LAR ---
-
     private BlogPostSummaryResponse mapToSummary(BlogPost post, String langCode) {
-        // İstenen dildeki translation'ı bul
         BlogPostTranslation translation = post.getTranslations().stream()
                 .filter(t -> t.getLanguage().getCode().equals(langCode))
                 .findFirst()
