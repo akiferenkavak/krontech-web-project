@@ -44,6 +44,10 @@ app:
   cookie:
     secure: ${APP_COOKIE_SECURE:false}
     max-age-seconds: 86400
+  frontend:
+    url: ${FRONTEND_URL:http://frontend:3000}
+  revalidate:
+    secret: ${REVALIDATE_SECRET:krontech-revalidate-secret}
 
 logging:
   level:

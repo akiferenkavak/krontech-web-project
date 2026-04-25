@@ -31,6 +31,7 @@ public class BlogPostService {
     private final LanguageRepository languageRepository;
     private final MediaRepository mediaRepository;
     private final UserRepository userRepository;
+    private final RevalidationService revalidationService;
 
     @Cacheable(value = "blog-posts", key = "#langCode + '-' + #page + '-' + #size")
     @Transactional(readOnly = true)
@@ -187,6 +188,7 @@ public class BlogPostService {
         }
 
         blogPostRepository.save(post);
+        revalidationService.revalidateBlog(post.getSlug());
         return mapToDetail(blogPostRepository.findByIdWithDetails(id).orElseThrow());
     }
 
@@ -241,6 +243,9 @@ public class BlogPostService {
         }
 
         translationRepository.save(translation);
+        revalidationService.revalidateBlog(
+            blogPostRepository.findById(postId).orElseThrow().getSlug()
+        );
         return mapToDetail(blogPostRepository.findByIdWithDetails(postId).orElseThrow());
     }
 

@@ -27,6 +27,7 @@ public class ProductService {
     private final ProductTranslationRepository translationRepository;
     private final LanguageRepository languageRepository;
     private final MediaRepository mediaRepository;
+    private final RevalidationService revalidationService;
 
     @Cacheable(value = "products", key = "#langCode")
     @Transactional(readOnly = true)
@@ -138,10 +139,11 @@ public class ProductService {
             product.setFeaturedImage(image);
         }
 
+        revalidationService.revalidateProduct(product.getSlug());
         return mapToDetail(productRepository.save(product));
     }
 
-    @Caching(evict = {
+@Caching(evict = {
         @CacheEvict(value = "products", allEntries = true),
         @CacheEvict(value = "products-root", allEntries = true),
         @CacheEvict(value = "products-children", allEntries = true),
@@ -187,7 +189,10 @@ public class ProductService {
 
         translationRepository.save(translation);
 
-        return mapToDetail(productRepository.findByIdWithTranslations(productId).orElseThrow());
+        ProductDetailResponse result = mapToDetail(
+                productRepository.findByIdWithTranslations(productId).orElseThrow());
+        revalidationService.revalidateProduct(product.getSlug());
+        return result;
     }
 
     @Caching(evict = {
