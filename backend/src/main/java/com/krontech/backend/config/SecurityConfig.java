@@ -40,6 +40,9 @@ public class SecurityConfig {
                 // --- PUBLIC: Auth endpoint'leri ---
                 .requestMatchers("/api/v1/auth/**").permitAll()
 
+                // --- PUBLIC: Actuator health ---
+                .requestMatchers("/actuator/health").permitAll()
+
                 // --- PUBLIC: Swagger ---
                 .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
 
