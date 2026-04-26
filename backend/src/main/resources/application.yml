@@ -48,6 +48,8 @@ app:
     url: ${FRONTEND_URL:http://frontend:3000}
   revalidate:
     secret: ${REVALIDATE_SECRET:krontech-revalidate-secret}
+  recaptcha:
+    secret: ${RECAPTCHA_SECRET_KEY} 
 
 logging:
   level:

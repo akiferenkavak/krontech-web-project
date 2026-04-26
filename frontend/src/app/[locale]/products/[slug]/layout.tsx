@@ -90,9 +90,9 @@ export default async function ProductLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: Locale; slug: string; tab?: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { locale, slug } = await params;
+  const { locale, slug } = await params as { locale: Locale; slug: string };
   const isTr = locale === 'tr';
 
   let product = null;

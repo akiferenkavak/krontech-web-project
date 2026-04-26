@@ -40,7 +40,7 @@ export default async function CategoryPage({
   if (!meta) notFound();
 
   // Tüm ürünleri çek, bu kategoriye göre filtrele
-  let products = [];
+  let products: Awaited<ReturnType<typeof getProducts>> = [];
   try {
     const all = await getProducts(locale);
     products = all.filter((p) => p.category === meta.categoryKey);

@@ -394,39 +394,98 @@ Object[][] posts = {
 
         log.info("Seed blog posts created.");
     }
-    private void seedForms() {
-        if (formDefinitionRepository.existsBySlug("demo-request")) {
-            return;
+private void seedForms() {
+
+        // ── CONTACT FORMU ────────────────────────────────────────────────────────
+        if (!formDefinitionRepository.existsBySlug("contact")) {
+
+            List<Map<String, Object>> contactFields = List.of(
+                Map.of("name", "firstName",  "type", "text",     "required", true,
+                       "label_tr", "Ad",              "label_en", "First Name",  "gridCol", "half"),
+                Map.of("name", "lastName",   "type", "text",     "required", true,
+                       "label_tr", "Soyad",            "label_en", "Last Name",   "gridCol", "half"),
+                Map.of("name", "email",      "type", "email",    "required", true,
+                       "label_tr", "E-Posta",          "label_en", "E-Mail",      "gridCol", "half"),
+                Map.of("name", "jobTitle",   "type", "text",     "required", true,
+                       "label_tr", "Unvan",            "label_en", "Job Title",   "gridCol", "half"),
+                Map.of("name", "department", "type", "select",   "required", true,
+                       "label_tr", "Departman",        "label_en", "Department",  "gridCol", "half",
+                       "options_tr", List.of("Satış", "Pazarlama", "BT / Bilgi Teknolojileri", "Finans", "İnsan Kaynakları", "Diğer"),
+                       "options_en", List.of("Sales", "Marketing", "IT / Information Technology", "Finance", "Human Resources", "Other")),
+                Map.of("name", "company",    "type", "text",     "required", true,
+                       "label_tr", "Şirket",           "label_en", "Company",     "gridCol", "half"),
+                Map.of("name", "country",    "type", "country",  "required", false,
+                       "label_tr", "Ülke",             "label_en", "Country",     "gridCol", "half"),
+                Map.of("name", "phone",      "type", "phone",    "required", false,
+                       "label_tr", "Telefon",          "label_en", "Phone",       "gridCol", "half"),
+                Map.of("name", "callNeeded", "type", "select",   "required", false,
+                       "label_tr", "Arama ihtiyacınız var mı?", "label_en", "Do you need a call for assistance?",
+                       "gridCol", "full",
+                       "options_tr", List.of("Evet", "Hayır"),
+                       "options_en", List.of("Yes", "No")),
+                Map.of("name", "subject",    "type", "text",     "required", true,
+                       "label_tr", "Konu",             "label_en", "Subject",     "gridCol", "full"),
+                Map.of("name", "message",    "type", "textarea", "required", true,
+                       "label_tr", "Mesaj",            "label_en", "Message",     "gridCol", "full")
+            );
+
+            FormDefinition contactForm = FormDefinition.builder()
+                    .name("Contact Us")
+                    .slug("contact")
+                    .fieldsSchema(contactFields)
+                    .isActive(true)
+                    .build();
+
+            formDefinitionRepository.save(contactForm);
+            log.info("[DataInitializer] 'contact' form definition eklendi.");
+        } else {
+            log.info("[DataInitializer] 'contact' form definition zaten mevcut, atlanıyor.");
         }
 
-        List<Map<String, Object>> fields = List.of(
-                Map.of("name", "firstName",        "type", "text",     "required", true,
-                        "label_tr", "Ad",                  "label_en", "First Name"),
-                Map.of("name", "lastName",         "type", "text",     "required", true,
-                        "label_tr", "Soyad",               "label_en", "Last Name"),
-                Map.of("name", "email",            "type", "email",    "required", true,
-                        "label_tr", "E-posta",             "label_en", "Email"),
-                Map.of("name", "phone",            "type", "tel",      "required", false,
-                        "label_tr", "Telefon",             "label_en", "Phone"),
-                Map.of("name", "company",          "type", "text",     "required", true,
-                        "label_tr", "Şirket",              "label_en", "Company"),
-                Map.of("name", "interestedProduct","type", "select",   "required", false,
-                        "label_tr", "İlgilenilen Ürün",    "label_en", "Product of Interest",
-                        "source",   "api",
-                        "endpoint", "/api/v1/products"),
-                Map.of("name", "message",          "type", "textarea", "required", false,
-                        "label_tr", "Mesaj",               "label_en", "Message")
-        );
+        // ── DEMO REQUEST FORMU ───────────────────────────────────────────────────
+        if (!formDefinitionRepository.existsBySlug("demo-request")) {
 
-        FormDefinition demoForm = FormDefinition.builder()
-                .name("Demo Request")
-                .slug("demo-request")
-                .fieldsSchema(fields)
-                .isActive(true)
-                .build();
+            List<Map<String, Object>> demoFields = List.of(
+                Map.of("name", "firstName",  "type", "text",     "required", true,
+                       "label_tr", "Ad",              "label_en", "First Name",  "gridCol", "half"),
+                Map.of("name", "lastName",   "type", "text",     "required", true,
+                       "label_tr", "Soyad",            "label_en", "Last Name",   "gridCol", "half"),
+                Map.of("name", "company",    "type", "text",     "required", true,
+                       "label_tr", "Şirket",           "label_en", "Company",     "gridCol", "half"),
+                Map.of("name", "jobTitle",   "type", "text",     "required", true,
+                       "label_tr", "Unvan",            "label_en", "Job Title",   "gridCol", "half"),
+                Map.of("name", "email",      "type", "email",    "required", true,
+                       "label_tr", "E-Posta",          "label_en", "E-Mail",      "gridCol", "full"),
+                Map.of("name", "product",    "type", "product_select", "required", false,
+                       "label_tr", "İlgilenilen Ürün", "label_en", "Product",     "gridCol", "half",
+                       "source", "api", "endpoint", "/api/v1/products"),
+                Map.of("name", "country",    "type", "country",  "required", false,
+                       "label_tr", "Ülke",             "label_en", "Country",     "gridCol", "half"),
+                Map.of("name", "phone",      "type", "phone",    "required", false,
+                       "label_tr", "Telefon",          "label_en", "Phone",       "gridCol", "half"),
+                Map.of("name", "callNeeded", "type", "select",   "required", false,
+                       "label_tr", "Arama ihtiyacınız var mı?", "label_en", "Do you need a call for assistance?",
+                       "gridCol", "full",
+                       "options_tr", List.of("Evet", "Hayır"),
+                       "options_en", List.of("Yes", "No")),
+                Map.of("name", "subject",    "type", "text",     "required", true,
+                       "label_tr", "Konu",             "label_en", "Subject",     "gridCol", "full"),
+                Map.of("name", "message",    "type", "textarea", "required", true,
+                       "label_tr", "Mesaj",            "label_en", "Message",     "gridCol", "full")
+            );
 
-        formDefinitionRepository.save(demoForm);
-        log.info("Demo request form created.");
+            FormDefinition demoForm = FormDefinition.builder()
+                    .name("Request a Demo")
+                    .slug("demo-request")
+                    .fieldsSchema(demoFields)
+                    .isActive(true)
+                    .build();
+
+            formDefinitionRepository.save(demoForm);
+            log.info("[DataInitializer] 'demo-request' form definition eklendi.");
+        } else {
+            log.info("[DataInitializer] 'demo-request' form definition zaten mevcut, atlanıyor.");
+        }
     }
 
     private void seedResources() {

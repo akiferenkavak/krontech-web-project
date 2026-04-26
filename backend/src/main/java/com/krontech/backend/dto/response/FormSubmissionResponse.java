@@ -11,5 +11,6 @@ public record FormSubmissionResponse(
         String status,
         String ipAddress,
         boolean kvkkConsent,
+        boolean marketingConsent,
         LocalDateTime createdAt
 ) {}

@@ -10,12 +10,12 @@ export default async function ProductResourcesPage({
   const { locale, slug } = await params;
   const isTr = locale === 'tr';
 
-  let resources = [];
+  let resources: Awaited<ReturnType<typeof getResources>> = [];
   let product = null;
 
   try {
     const all = await getResources(locale);
-    resources = all.filter((r) => r.relatedProductSlug === slug && r.isActive !== false);
+    resources = all.filter((r) => r.relatedProductSlug === slug);
   } catch {
     resources = [];
   }

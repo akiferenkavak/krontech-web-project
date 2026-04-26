@@ -22,7 +22,6 @@ public class FormSubmission {
     @JoinColumn(name = "form_definition_id", nullable = false)
     private FormDefinition formDefinition;
 
-    // Gelen form verisi: {"name": "Ali", "email": "ali@x.com", ...}
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private Object data;
@@ -37,8 +36,13 @@ public class FormSubmission {
     @Column(name = "user_agent")
     private String userAgent;
 
+    // 1. Zorunlu KVKK onayı — kişisel verilerin işlenmesi
     @Column(name = "kvkk_consent", nullable = false)
     private boolean kvkkConsent = false;
+
+    // 2. Opsiyonel pazarlama onayı — SMS/e-posta ticari ileti
+    @Column(name = "marketing_consent", nullable = false)
+    private boolean marketingConsent = false;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -14,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,8 +28,9 @@ public class FormService {
 
     private final FormDefinitionRepository formDefinitionRepository;
     private final FormSubmissionRepository formSubmissionRepository;
+    private final RecaptchaService recaptchaService;
 
-    // --- PUBLIC: Form tanımını slug ile getir (frontend form render için) ---
+    // --- PUBLIC: Form tanımını slug ile getir ---
     @Transactional(readOnly = true)
     public FormDefinitionResponse getFormBySlug(String slug) {
         FormDefinition form = formDefinitionRepository.findBySlug(slug)
@@ -40,12 +43,20 @@ public class FormService {
         return mapToFormDefinitionResponse(form);
     }
 
-    // --- PUBLIC: Form gönder (demo talep / iletişim) ---
+    // --- PUBLIC: Form gönder ---
     @Transactional
     public FormSubmissionResponse submitForm(
             FormSubmissionRequest request,
             String ipAddress,
             String userAgent) {
+
+        // reCAPTCHA doğrulama
+        if (!recaptchaService.verify(request.recaptchaToken())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "reCAPTCHA doğrulaması başarısız. Lütfen tekrar deneyin."
+            );
+        }
 
         FormDefinition form = formDefinitionRepository.findById(request.formDefinitionId())
                 .orElseThrow(() -> new ResourceNotFoundException("Form bulunamadı! ID: " + request.formDefinitionId()));
@@ -61,6 +72,7 @@ public class FormService {
                 .ipAddress(ipAddress)
                 .userAgent(userAgent)
                 .kvkkConsent(request.kvkkConsent())
+                .marketingConsent(request.marketingConsent())
                 .build();
 
         return mapToSubmissionResponse(formSubmissionRepository.save(submission));
@@ -106,7 +118,6 @@ public class FormService {
         FormSubmission submission = formSubmissionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Gönderim bulunamadı! ID: " + id));
 
-        // Okundu olarak işaretle
         if ("new".equals(submission.getStatus())) {
             submission.setStatus("read");
             formSubmissionRepository.save(submission);
@@ -125,7 +136,7 @@ public class FormService {
         return mapToSubmissionResponse(formSubmissionRepository.save(submission));
     }
 
-    // --- ADMIN: Export — tüm kayıtları listele ve "exported" olarak işaretle ---
+    // --- ADMIN: Export ---
     @Transactional
     public List<FormSubmissionResponse> exportSubmissions(UUID formDefinitionId) {
         if (!formDefinitionRepository.existsById(formDefinitionId)) {
@@ -135,7 +146,6 @@ public class FormService {
         List<FormSubmission> submissions = formSubmissionRepository
                 .findByFormDefinitionIdOrderByCreatedAtDesc(formDefinitionId);
 
-        // Hepsini exported olarak işaretle
         submissions.forEach(s -> s.setStatus("exported"));
         formSubmissionRepository.saveAll(submissions);
 
@@ -173,6 +183,7 @@ public class FormService {
                 submission.getStatus(),
                 submission.getIpAddress(),
                 submission.isKvkkConsent(),
+                submission.isMarketingConsent(),
                 submission.getCreatedAt()
         );
     }
