@@ -1,3 +1,5 @@
+//CacheConfig.java Redis ile cache yönetimi için gerekli konfigürasyonları içerir. RedisCacheManager bean'i, cache'lerin nasıl yönetileceğini belirler.
+
 package com.krontech.backend.config;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

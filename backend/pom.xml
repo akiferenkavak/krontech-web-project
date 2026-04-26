@@ -113,6 +113,17 @@
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 
+		<!-- Cache yönetimi için Bucket4j ve Lettuce bagimliliklari eklenir. Bucket4j, rate limiting ve cache yönetimi için kullanilirken, Lettuce Redis ile iletişim kurmak için kullanilir. -->
+		<dependency>
+			<groupId>com.bucket4j</groupId>
+			<artifactId>bucket4j-redis</artifactId>
+			<version>8.10.1</version>
+		</dependency>
+		<dependency>
+			<groupId>io.lettuce</groupId>
+			<artifactId>lettuce-core</artifactId>
+		</dependency>		
+
 	</dependencies>
 
 	<build>
