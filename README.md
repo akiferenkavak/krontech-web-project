@@ -112,7 +112,7 @@ krontech-web-project/
         │   │   └── request-demo/ # Demo request form
         │   ├── admin/            # CMS admin panel
         │   │   ├── login/
-        │   │   └── (shell)/      # Dashboard, Blog, Products, Resources, Submissions
+        │   │   └── (shell)/      # Dashboard, Blog, Products, Resources, Media, Submissions, Redirects, Audit Logs
         │   ├── api/revalidate/   # ISR revalidation endpoint
         │   ├── sitemap.ts        # Dynamic sitemap
         │   └── robots.ts
@@ -195,10 +195,11 @@ Distributed rate limiting with Bucket4j + Redis:
 - Canonical URL support (`canonicalUrl` field in ProductTranslation entity)
 
 **GEO (Generative Engine Optimization):**
-- `structuredData` (JSON-LD) field in every content entity
-- `Article` schema auto-generated for blog posts (`/[locale]/blog/[slug]/page.tsx`)
+- Blog pages: `Article` schema auto-generated (`/[locale]/blog/[slug]/page.tsx`)
+- Product pages: `SoftwareApplication` schema auto-generated (`/[locale]/products/[slug]/layout.tsx`)
+- Admin-managed `structuredData` field on every content entity — merges with auto-generated schema
 - Semantic HTML structure (`<article>`, `<nav>`, `<main>`, `<section>`)
-- Meaningful content blocks readable by LLMs
+- LLM-readable meaningful content blocks
 
 ### Test Framework Selection
 
@@ -227,16 +228,23 @@ Distributed rate limiting with Bucket4j + Redis:
 ### Admin Panel (CMS)
 
 - **Secure auth** — HttpOnly cookie, `/admin/*` route protection
-- **Blog management** — TipTap WYSIWYG editor, TR/EN translation tabs
+- **Blog management** — TipTap WYSIWYG editor, TR/EN translation tabs, Draft/Publish/Archive, scheduled publish
 - **Product management** — 4 content tabs (Solution, How It Works, Key Benefits, Product Family), SEO fields
 - **Resource management** — type, related product, file URL, thumbnail
+- **Media library** — URL-based media registration, thumbnail preview, copy URL to clipboard
 - **Form submissions** — list, detail modal, status update, CSV export
+- **Redirect management** — 301/302 redirects, active/inactive toggle, runtime middleware integration
+- **Audit logs** — full change history per entity with action badges and JSON diff
+- **Version history** — per-content history modal in blog and product editors, shows full content diff
 - **Dashboard** — statistics cards
 
 ### Publishing Workflow
 
-- **Draft/Publish** — `ContentStatus` enum (DRAFT, PUBLISHED, SCHEDULED, ARCHIVED)
+- **Draft/Publish/Archive** — `ContentStatus` enum (DRAFT, PUBLISHED, SCHEDULED, ARCHIVED)
+- **Scheduled publish** — `@Scheduled` job runs every minute, auto-publishes due content
+- **Preview link** — draft mode endpoint, preview banner with exit button
 - **ISR Revalidation** — Next.js cache automatically cleared when content is published
+- **Version history** — every save recorded to audit log with full content snapshot
 
 ---
 
@@ -261,8 +269,12 @@ POST /api/v1/forms/submit
 GET/PUT /api/v1/products/{id}
 GET/PUT /api/v1/blog-posts/{id}
 GET/PUT /api/v1/admin/resources/{id}
+GET/POST/DELETE /api/v1/admin/media
 GET     /api/v1/admin/forms/{formId}/submissions
 GET     /api/v1/admin/forms/{formId}/submissions/export
+GET     /api/v1/admin/redirects
+GET     /api/v1/admin/audit-logs
+GET     /api/v1/admin/versions/{entityType}/{entityId}
 ```
 
 ---
@@ -331,8 +343,11 @@ cp .env.example .env
 | `APP_COOKIE_SECURE` | HTTPS cookie (prod: true) | `false` |
 | `NEXT_PUBLIC_API_URL` | Frontend → Backend URL | `http://localhost:8080/api/v1` |
 | `REVALIDATE_SECRET` | ISR revalidation secret | — (required) |
+| `FRONTEND_URL` | Backend → Frontend URL | `http://frontend:3000` |
+| `NEXT_PUBLIC_SITE_URL` | Canonical site URL for sitemap | `https://krontech.com` |
 | `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` | reCAPTCHA v2 site key | — |
 | `RECAPTCHA_SECRET_KEY` | reCAPTCHA v2 secret key | — |
+| `PREVIEW_SECRET` | Draft preview secret (min 32 chars) | — (required) |
 
 ---
 
@@ -364,6 +379,7 @@ Claude (Anthropic) was actively used throughout this project:
 - Testcontainers integration test setup
 - TipTap editor integration
 - SEO/GEO metadata structure
+- Version history and audit log enrichment
 
 AI outputs were not copied directly; every output was evaluated against project requirements, adapted, and tested.
 
@@ -485,7 +501,7 @@ krontech-web-project/
         │   │   └── request-demo/ # Demo talep formu
         │   ├── admin/            # CMS admin paneli
         │   │   ├── login/
-        │   │   └── (shell)/      # Dashboard, Blog, Products, Resources, Submissions
+        │   │   └── (shell)/      # Dashboard, Blog, Products, Resources, Media, Submissions, Redirects, Audit Logs
         │   ├── api/revalidate/   # ISR revalidation endpoint
         │   ├── sitemap.ts        # Dinamik sitemap
         │   └── robots.ts
@@ -568,8 +584,9 @@ Bucket4j + Redis ile dağıtık rate limiting:
 - Canonical URL desteği (ProductTranslation entity'sinde `canonicalUrl` alanı)
 
 **GEO (Generative Engine Optimization):**
-- Her içerik entity'sinde `structuredData` (JSON-LD) alanı
-- Blog yazıları için `Article` schema otomatik üretiliyor (`/[locale]/blog/[slug]/page.tsx`)
+- Blog sayfaları: `Article` schema otomatik üretiliyor (`/[locale]/blog/[slug]/page.tsx`)
+- Ürün sayfaları: `SoftwareApplication` schema otomatik üretiliyor (`/[locale]/products/[slug]/layout.tsx`)
+- Admin'den yönetilebilen `structuredData` alanı — otomatik schema ile merge ediliyor
 - Semantik HTML yapısı (`<article>`, `<nav>`, `<main>`, `<section>`)
 - LLM'lerin anlayabileceği anlamlı içerik blokları
 
@@ -600,16 +617,23 @@ Bucket4j + Redis ile dağıtık rate limiting:
 ### Admin Panel (CMS)
 
 - **Güvenli auth** — HttpOnly cookie, `/admin/*` route koruması
-- **Blog yönetimi** — TipTap WYSIWYG editör, TR/EN çeviri sekmeleri
+- **Blog yönetimi** — TipTap WYSIWYG editör, TR/EN çeviri sekmeleri, Draft/Publish/Archive, zamanlanmış yayın
 - **Ürün yönetimi** — 4 içerik sekmesi (Solution, How It Works, Key Benefits, Product Family), SEO alanları
 - **Kaynak yönetimi** — tip, ilgili ürün, dosya URL, thumbnail
+- **Medya kütüphanesi** — URL tabanlı medya kaydı, thumbnail önizleme, URL kopyalama
 - **Form gönderimleri** — liste, detay modal, durum güncelleme, CSV export
+- **Redirect yönetimi** — 301/302 yönlendirme, aktif/pasif toggle, middleware runtime entegrasyonu
+- **Audit loglar** — entity bazında tam değişiklik geçmişi, action badge'leri ve JSON diff
+- **Versiyon geçmişi** — blog ve ürün editörlerinde içerik başına modal, tam içerik snapshot'ı
 - **Dashboard** — istatistik kartları
 
 ### Yayın Süreci
 
-- **Draft/Publish** — `ContentStatus` enum (DRAFT, PUBLISHED, SCHEDULED, ARCHIVED)
+- **Draft/Publish/Archive** — `ContentStatus` enum (DRAFT, PUBLISHED, SCHEDULED, ARCHIVED)
+- **Zamanlanmış yayın** — her dakika çalışan `@Scheduled` job, süresi gelen içerikleri otomatik yayınlıyor
+- **Preview link** — draft mode endpoint, önizleme banner'ı ve çıkış butonu
 - **ISR Revalidation** — içerik publish edildiğinde Next.js cache otomatik temizleniyor
+- **Versiyon geçmişi** — her kayıt işlemi tam içerik snapshot'ı ile audit log'a yazılıyor
 
 ---
 
@@ -631,11 +655,15 @@ GET  /api/v1/forms/{slug}
 POST /api/v1/forms/submit
 
 # Admin (JWT gerektirir)
-GET/PUT /api/v1/products/{id}
-GET/PUT /api/v1/blog-posts/{id}
-GET/PUT /api/v1/admin/resources/{id}
-GET     /api/v1/admin/forms/{formId}/submissions
-GET     /api/v1/admin/forms/{formId}/submissions/export
+GET/PUT     /api/v1/products/{id}
+GET/PUT     /api/v1/blog-posts/{id}
+GET/PUT     /api/v1/admin/resources/{id}
+GET/POST/DELETE /api/v1/admin/media
+GET         /api/v1/admin/forms/{formId}/submissions
+GET         /api/v1/admin/forms/{formId}/submissions/export
+GET         /api/v1/admin/redirects
+GET         /api/v1/admin/audit-logs
+GET         /api/v1/admin/versions/{entityType}/{entityId}
 ```
 
 ---
@@ -704,8 +732,11 @@ cp .env.example .env
 | `APP_COOKIE_SECURE` | HTTPS cookie (prod: true) | `false` |
 | `NEXT_PUBLIC_API_URL` | Frontend → Backend URL | `http://localhost:8080/api/v1` |
 | `REVALIDATE_SECRET` | ISR revalidation secret | — (zorunlu) |
+| `FRONTEND_URL` | Backend → Frontend URL | `http://frontend:3000` |
+| `NEXT_PUBLIC_SITE_URL` | Sitemap için canonical URL | `https://krontech.com` |
 | `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` | reCAPTCHA v2 site key | — |
 | `RECAPTCHA_SECRET_KEY` | reCAPTCHA v2 secret key | — |
+| `PREVIEW_SECRET` | Draft önizleme secret'ı (min 32 karakter) | — (zorunlu) |
 
 ---
 
@@ -737,5 +768,6 @@ Bu proje boyunca Claude (Anthropic) aktif olarak kullanıldı:
 - Testcontainers integration test kurulumu
 - TipTap editör entegrasyonu
 - SEO/GEO metadata yapısı
+- Versiyon geçmişi ve audit log zenginleştirmesi
 
 AI çıktıları doğrudan kopyalanmadı; her çıktı proje gereksinimlerine göre değerlendirildi, uyarlandı ve test edildi.
