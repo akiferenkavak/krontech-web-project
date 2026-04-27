@@ -1,0 +1,18 @@
+# src/test/resources/application-test.yml
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  cache:
+    type: none   # test'te Redis cache devre dışı
+
+app:
+  jwt:
+    secret: test-jwt-secret-key-32-chars-minimum
+    expiration-ms: 86400000
+  cookie:
+    secure: false
+  revalidate:
+    secret: test-revalidate-secret
+recaptcha:
+  secret-key: test-recaptcha-key
