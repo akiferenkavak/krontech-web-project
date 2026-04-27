@@ -3,7 +3,6 @@ import { type Locale } from '@/i18n/config';
 import { getProductBySlug, getResources } from '@/lib/api';
 import type { Metadata } from 'next';
 import styles from '@/components/product.module.css';
-// Tab link — active state için ayrı client component
 import TabLink from '@/components/ProductTabLink';
 
 export async function generateMetadata({
@@ -40,7 +39,6 @@ export async function generateMetadata({
   }
 }
 
-// Tab ikonları
 function SolutionIcon() {
   return (
     <svg className={styles.tabIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -115,7 +113,34 @@ export default async function ProductLayout({
   const title = translation?.title ?? product.slug;
   const shortDesc = translation?.shortDescription ?? '';
 
-  // Dinamik sekme listesi
+  // ── GEO: SoftwareApplication JSON-LD ──────────────────────────────────────
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: title,
+    description: shortDesc,
+    applicationCategory: 'SecurityApplication',
+    operatingSystem: 'Web',
+    url: `https://krontech.com/${locale}/products/${slug}`,
+    offers: {
+      '@type': 'Offer',
+      url: `https://krontech.com/${locale}/request-demo?product=${slug}`,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Kron',
+      url: 'https://krontech.com',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://krontech.com/project/_resources/images/kt-dark-logo-en.png',
+      },
+    },
+    ...(translation?.structuredData
+      ? JSON.parse(translation.structuredData)
+      : {}),
+  };
+  // ──────────────────────────────────────────────────────────────────────────
+
   const tabs = [
     { key: 'solution', label: isTr ? 'Çözüm' : 'Solution', href: `/${locale}/products/${slug}`, icon: <SolutionIcon />, show: true },
     { key: 'how-it-works', label: isTr ? 'Nasıl Çalışır?' : 'How It Works?', href: `/${locale}/products/${slug}/how-it-works`, icon: <HowItWorksIcon />, show: !!translation?.howItWorksContent },
@@ -124,12 +149,10 @@ export default async function ProductLayout({
     { key: 'resources', label: isTr ? 'Kaynaklar' : 'Resources', href: `/${locale}/products/${slug}/resources`, icon: <ResourcesIcon />, show: hasResources },
   ].filter((t) => t.show);
 
-  // Banner arka planı
   const bannerStyle = product.bannerImageUrl
     ? { backgroundImage: `url(${product.bannerImageUrl})` }
     : { background: 'linear-gradient(135deg, #0d1b3e 0%, #1a3a6e 50%, #0d1b3e 100%)' };
 
-  // Kategori breadcrumb label
   const categoryLabel = {
     'identity-access': isTr ? 'Kimlik ve Erişim Yönetimi' : 'Identity & Access Management',
     'data': isTr ? 'Veri Güvenliği' : 'Data Security',
@@ -138,6 +161,12 @@ export default async function ProductLayout({
 
   return (
     <>
+      {/* GEO: JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* ===== BANNER ===== */}
       <section className={styles.banner} style={bannerStyle}>
         <div className={styles.bannerOverlay} />
@@ -199,5 +228,3 @@ export default async function ProductLayout({
     </>
   );
 }
-
-

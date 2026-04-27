@@ -77,6 +77,9 @@ services:
       NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
       PREVIEW_SECRET: ${PREVIEW_SECRET}
       NEXT_PUBLIC_PREVIEW_SECRET: ${NEXT_PUBLIC_PREVIEW_SECRET}      
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET}
+      FRONTEND_URL: http://frontend:3000
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public
