@@ -226,8 +226,17 @@ public class ProductService {
 
         // --- AUDIT LOG ---
         String action = (status == ContentStatus.PUBLISHED) ? "PUBLISH" : "UPDATE";
-        auditLogService.log("Product", productId, action,
-                Map.of("languageCode", language.getCode(), "status", status.name()));
+        Map<String, Object> logData = new java.util.HashMap<>();
+        logData.put("languageCode",       language.getCode());
+        logData.put("status",             status.name());
+        logData.put("title",              translation.getTitle() != null ? translation.getTitle() : "");
+        logData.put("shortDescription",   translation.getShortDescription() != null ? translation.getShortDescription() : "");
+        logData.put("content",            translation.getContent() != null ? translation.getContent() : "");
+        logData.put("howItWorksContent",  translation.getHowItWorksContent() != null ? translation.getHowItWorksContent() : "");
+        logData.put("keyBenefitsContent", translation.getKeyBenefitsContent() != null ? translation.getKeyBenefitsContent() : "");
+        logData.put("seoTitle",           translation.getSeoTitle() != null ? translation.getSeoTitle() : "");
+        logData.put("seoDescription",     translation.getSeoDescription() != null ? translation.getSeoDescription() : "");
+        auditLogService.log("Product", productId, action, logData);
 
         ProductDetailResponse result = mapToDetail(
                 productRepository.findByIdWithTranslationsForAdmin(productId).orElseThrow());

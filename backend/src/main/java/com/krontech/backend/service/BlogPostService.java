@@ -282,7 +282,15 @@ public class BlogPostService {
         // --- AUDIT LOG ---
         String action = (status == ContentStatus.PUBLISHED) ? "PUBLISH" : "UPDATE";
         auditLogService.log("BlogPost", postId, action,
-                Map.of("languageCode", language.getCode(), "status", status.name()));
+                Map.of(
+                    "languageCode",  language.getCode(),
+                    "status",        status.name(),
+                    "title",         translation.getTitle() != null ? translation.getTitle() : "",
+                    "excerpt",       translation.getExcerpt() != null ? translation.getExcerpt() : "",
+                    "content",       translation.getContent() != null ? translation.getContent() : "",
+                    "seoTitle",      translation.getSeoTitle() != null ? translation.getSeoTitle() : "",
+                    "seoDescription",translation.getSeoDescription() != null ? translation.getSeoDescription() : ""
+                ));
 
         revalidationService.revalidateBlog(
             blogPostRepository.findById(postId).orElseThrow().getSlug()
