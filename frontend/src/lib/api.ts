@@ -143,8 +143,15 @@ export function getBlogPosts(
   return apiFetch(`/blog-posts?lang=${locale}&page=${page}&size=${size}`);
 }
 
-export function getBlogPostBySlug(slug: string, locale: string): Promise<BlogPostDetail> {
-  return apiFetch(`/blog-posts/slug/${slug}`);
+export function getBlogPostBySlug(
+  slug: string,
+  locale: string,
+  preview = false        // YENİ — preview modda backend ?preview=true gönderir
+): Promise<BlogPostDetail> {
+  const url = preview
+    ? `/blog-posts/slug/${slug}?preview=true`
+    : `/blog-posts/slug/${slug}`;
+  return apiFetch(url);
 }
 
 export function getFeaturedBlogPosts(locale: string): Promise<BlogPostSummary[]> {

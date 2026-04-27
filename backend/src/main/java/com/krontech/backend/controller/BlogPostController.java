@@ -20,8 +20,6 @@ public class BlogPostController {
 
     private final BlogPostService blogPostService;
 
-    // Yayınlanmış yazılar — dil ve sayfalama ile
-    // GET /api/v1/blog-posts?lang=en&page=0&size=10
     @GetMapping
     public ResponseEntity<PagedResponse<BlogPostSummaryResponse>> getPublishedPosts(
             @RequestParam(defaultValue = "en") String lang,
@@ -30,8 +28,6 @@ public class BlogPostController {
         return ResponseEntity.ok(blogPostService.getPublishedPosts(lang, page, size));
     }
 
-    // Tag'e göre filtreli liste
-    // GET /api/v1/blog-posts/tag/pam?lang=en
     @GetMapping("/tag/{tagSlug}")
     public ResponseEntity<PagedResponse<BlogPostSummaryResponse>> getPostsByTag(
             @PathVariable String tagSlug,
@@ -41,16 +37,17 @@ public class BlogPostController {
         return ResponseEntity.ok(blogPostService.getPostsByTag(tagSlug, lang, page, size));
     }
 
-    // ID ile detay
     @GetMapping("/{id}")
     public ResponseEntity<BlogPostDetailResponse> getPostById(@PathVariable UUID id) {
         return ResponseEntity.ok(blogPostService.getPostById(id));
     }
 
-    // Slug ile detay (frontend SSR/ISR için)
+    // preview=true gelirse status filtresi uygulanmaz — DRAFT içerikler de döner
     @GetMapping("/slug/{slug}")
-    public ResponseEntity<BlogPostDetailResponse> getPostBySlug(@PathVariable String slug) {
-        return ResponseEntity.ok(blogPostService.getPostBySlug(slug));
+    public ResponseEntity<BlogPostDetailResponse> getPostBySlug(
+            @PathVariable String slug,
+            @RequestParam(defaultValue = "false") boolean preview) {
+        return ResponseEntity.ok(blogPostService.getPostBySlug(slug, preview));
     }
 
     @GetMapping("/featured")
@@ -59,14 +56,18 @@ public class BlogPostController {
         return ResponseEntity.ok(blogPostService.getFeaturedPosts(lang));
     }
 
-    // Yeni post oluştur
+    // Admin — tüm postlar, tüm statuslar
+    @GetMapping("/admin-list")
+    public ResponseEntity<List<BlogPostDetailResponse>> getAllPostsForAdmin() {
+        return ResponseEntity.ok(blogPostService.getAllPostsForAdmin());
+    }
+
     @PostMapping
     public ResponseEntity<BlogPostDetailResponse> createPost(
             @Valid @RequestBody BlogPostCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(blogPostService.createPost(request));
     }
 
-    // Post güncelle
     @PutMapping("/{id}")
     public ResponseEntity<BlogPostDetailResponse> updatePost(
             @PathVariable UUID id,
@@ -74,14 +75,12 @@ public class BlogPostController {
         return ResponseEntity.ok(blogPostService.updatePost(id, request));
     }
 
-    // Post sil
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable UUID id) {
         blogPostService.deletePost(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Translation upsert
     @PutMapping("/{id}/translations")
     public ResponseEntity<BlogPostDetailResponse> upsertTranslation(
             @PathVariable UUID id,
@@ -89,7 +88,6 @@ public class BlogPostController {
         return ResponseEntity.ok(blogPostService.upsertTranslation(id, request));
     }
 
-    // Translation sil
     @DeleteMapping("/{id}/translations/{translationId}")
     public ResponseEntity<Void> deleteTranslation(
             @PathVariable UUID id,
@@ -97,8 +95,6 @@ public class BlogPostController {
         blogPostService.deleteTranslation(id, translationId);
         return ResponseEntity.noContent().build();
     }
-
-    // --- Tag endpoint'leri ---
 
     @GetMapping("/tags")
     public ResponseEntity<List<TagResponse>> getAllTags() {

@@ -83,11 +83,29 @@ public class BlogPostService {
         );
     }
 
-    @Cacheable(value = "blog-post-slug", key = "#slug")
     @Transactional(readOnly = true)
-    public BlogPostDetailResponse getPostBySlug(String slug) {
-        BlogPost post = blogPostRepository.findBySlugWithDetails(slug)
-                .orElseThrow(() -> new ResourceNotFoundException("Blog yazısı bulunamadı! Slug: " + slug));
+    public List<BlogPostDetailResponse> getAllPostsForAdmin() {
+        return blogPostRepository.findAllWithDetails()
+                .stream()
+                .map(this::mapToDetail)
+                .toList();
+    }
+
+    @Cacheable(value = "blog-post-slug", key = "#slug + '-' + #preview")
+    @Transactional(readOnly = true)
+    public BlogPostDetailResponse getPostBySlug(String slug, boolean preview) {
+        BlogPost post;
+ 
+        if (preview) {
+            // Preview modda status filtresi yok — DRAFT dahil tüm translation'lar döner
+            post = blogPostRepository.findBySlugForPreview(slug)
+                    .orElseThrow(() -> new ResourceNotFoundException("Blog yazısı bulunamadı! Slug: " + slug));
+        } else {
+            // Normal modda sadece PUBLISHED translation'lar
+            post = blogPostRepository.findBySlugWithDetails(slug)
+                    .orElseThrow(() -> new ResourceNotFoundException("Blog yazısı bulunamadı! Slug: " + slug));
+        }
+ 
         return mapToDetail(post);
     }
 

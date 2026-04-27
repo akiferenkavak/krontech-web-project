@@ -75,6 +75,8 @@ services:
       WATCHPACK_POLLING: "true"
       # Frontend için Public Site Key'i
       NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+      PREVIEW_SECRET: ${PREVIEW_SECRET}
+      NEXT_PUBLIC_PREVIEW_SECRET: ${NEXT_PUBLIC_PREVIEW_SECRET}      
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public

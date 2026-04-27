@@ -18,7 +18,6 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, UUID> {
 
     boolean existsBySlug(String slug);
 
-    // Slug ile detay — translations + language + tags + author tek sorguda
     @Query("""
         SELECT DISTINCT b FROM BlogPost b
         LEFT JOIN FETCH b.translations t
@@ -28,6 +27,17 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, UUID> {
         WHERE b.slug = :slug
         """)
     Optional<BlogPost> findBySlugWithDetails(@Param("slug") String slug);
+
+    // Preview mode — status filtresi yok, tüm translation'ları döndürür
+    @Query("""
+        SELECT DISTINCT b FROM BlogPost b
+        LEFT JOIN FETCH b.translations t
+        LEFT JOIN FETCH t.language
+        LEFT JOIN FETCH b.author
+        LEFT JOIN FETCH b.featuredImage
+        WHERE b.slug = :slug
+        """)
+    Optional<BlogPost> findBySlugForPreview(@Param("slug") String slug);
 
     @Query("""
         SELECT DISTINCT b FROM BlogPost b
@@ -39,8 +49,6 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, UUID> {
         """)
     Optional<BlogPost> findByIdWithDetails(@Param("id") UUID id);
 
-    // Liste için sayfalanmış sorgu — sadece belirli dil + status filtresiyle
-    // tags ayrı çekilir, bu sorgu summary için yeterli
     @Query("""
         SELECT b FROM BlogPost b
         LEFT JOIN FETCH b.featuredImage
@@ -56,7 +64,6 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, UUID> {
         Pageable pageable
     );
 
-    // Tag'e göre filtreleme
     @Query("""
         SELECT DISTINCT b FROM BlogPost b
         LEFT JOIN FETCH b.featuredImage
@@ -85,4 +92,14 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, UUID> {
     """)
     List<BlogPost> findFeaturedByLanguage(@Param("langCode") String langCode);
 
+    // Tüm postları status filtresi olmadan döndürür — admin liste için
+    @Query("""
+        SELECT DISTINCT b FROM BlogPost b
+        LEFT JOIN FETCH b.translations t
+        LEFT JOIN FETCH t.language
+        LEFT JOIN FETCH b.author
+        LEFT JOIN FETCH b.featuredImage
+        ORDER BY b.createdAt DESC
+        """)
+    List<BlogPost> findAllWithDetails();
 }

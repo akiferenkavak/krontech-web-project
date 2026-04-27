@@ -156,7 +156,7 @@ class BlogPostServiceTest {
                 .thenReturn(Optional.of(samplePost));
 
         BlogPostDetailResponse result =
-                blogPostService.getPostBySlug("zero-trust-mimarisi");
+                blogPostService.getPostBySlug("zero-trust-mimarisi", false);
 
         assertThat(result).isNotNull();
         assertThat(result.slug()).isEqualTo("zero-trust-mimarisi");
@@ -169,7 +169,7 @@ class BlogPostServiceTest {
         when(blogPostRepository.findBySlugWithDetails("nonexistent"))
                 .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> blogPostService.getPostBySlug("nonexistent"))
+        assertThatThrownBy(() -> blogPostService.getPostBySlug("nonexistent", false))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("nonexistent");
     }
