@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { draftMode } from 'next/headers';
 import { type Locale } from '@/i18n/config';
 import { getBlogPostBySlug, getFeaturedBlogPosts, getBlogPosts, type BlogPostDetail, type BlogPostSummary } from '@/lib/api';
 import type { Metadata } from 'next';
@@ -50,6 +51,9 @@ export default async function BlogDetailPage({
   const { locale, slug } = await params;
   const isTr = locale === 'tr';
 
+  // Draft mode kontrolü — /api/preview linkinden geliniyorsa true olur
+  const { isEnabled: isPreview } = await draftMode();
+
   let post: BlogPostDetail | null = null;
   let featuredPosts: BlogPostSummary[] = [];
   let otherPosts: BlogPostSummary[] = [];
@@ -58,7 +62,6 @@ export default async function BlogDetailPage({
   try { featuredPosts = await getFeaturedBlogPosts(locale); } catch { featuredPosts = []; }
   try {
     const data = await getBlogPosts(locale, 0, 6);
-    // Mevcut yazıyı "Other Blogs"'dan çıkar
     otherPosts = data.content.filter((p) => p.slug !== slug);
   } catch { otherPosts = []; }
 
@@ -99,6 +102,42 @@ export default async function BlogDetailPage({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+      )}
+
+      {/* ===== PREVIEW BANNER ===== */}
+      {isPreview && (
+        <div style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 9999,
+          background: '#854F0B',
+          color: 'white',
+          padding: '10px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          fontSize: '14px',
+          fontWeight: 500,
+        }}>
+          <span>
+            ⚠️ {isTr
+              ? 'Önizleme modu aktif — bu içerik henüz yayınlanmamış'
+              : 'Preview mode active — this content is not yet published'}
+          </span>
+          <a
+            href={`/api/preview/exit?redirect=/${locale}/blog/${slug}`}
+            style={{
+              color: 'white',
+              border: '1px solid rgba(255,255,255,0.5)',
+              padding: '4px 12px',
+              fontSize: '12px',
+              textDecoration: 'none',
+              borderRadius: '4px',
+            }}
+          >
+            {isTr ? 'Önizlemeyi Kapat' : 'Exit Preview'}
+          </a>
+        </div>
       )}
 
       <main className={styles.detailPage}>

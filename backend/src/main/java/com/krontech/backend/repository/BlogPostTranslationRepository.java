@@ -9,10 +9,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import java.time.LocalDateTime;
+
 @Repository
 public interface BlogPostTranslationRepository extends JpaRepository<BlogPostTranslation, UUID> {
 
     Optional<BlogPostTranslation> findByBlogPostIdAndLanguageCode(UUID blogPostId, String languageCode);
 
     List<BlogPostTranslation> findByBlogPostIdAndStatus(UUID blogPostId, ContentStatus status);
+
+    List<BlogPostTranslation> findByStatusAndScheduledAtBefore(ContentStatus status, LocalDateTime now);
 }

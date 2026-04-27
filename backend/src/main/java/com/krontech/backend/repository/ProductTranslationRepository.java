@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import java.time.LocalDateTime;
+
+
 @Repository
 public interface ProductTranslationRepository extends JpaRepository<ProductTranslation, UUID> {
 
@@ -17,4 +20,6 @@ public interface ProductTranslationRepository extends JpaRepository<ProductTrans
     boolean existsByProductIdAndLanguageId(UUID productId, UUID languageId);
 
     List<ProductTranslation> findByProductIdAndStatus(UUID productId, ContentStatus status);
+
+    List<ProductTranslation> findByStatusAndScheduledAtBefore(ContentStatus status, LocalDateTime now);
 }

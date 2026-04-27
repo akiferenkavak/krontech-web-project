@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -28,6 +29,7 @@ public class ProductService {
     private final LanguageRepository languageRepository;
     private final MediaRepository mediaRepository;
     private final RevalidationService revalidationService;
+    private final AuditLogService auditLogService;   // YENİ
 
     @Cacheable(value = "products", key = "#langCode")
     @Transactional(readOnly = true)
@@ -100,6 +102,11 @@ public class ProductService {
         }
 
         Product saved = productRepository.save(builder.build());
+
+        // --- AUDIT LOG ---
+        auditLogService.log("Product", saved.getId(), "CREATE",
+                Map.of("slug", saved.getSlug(), "category", saved.getCategory()));
+
         return mapToDetail(saved);
     }
 
@@ -118,6 +125,8 @@ public class ProductService {
         if (!product.getSlug().equals(request.slug()) && productRepository.existsBySlug(request.slug())) {
             throw new IllegalArgumentException("Bu slug zaten kullanımda: " + request.slug());
         }
+
+        String oldSlug = product.getSlug();
 
         product.setSlug(request.slug());
         product.setCategory(request.category());
@@ -139,11 +148,17 @@ public class ProductService {
             product.setFeaturedImage(image);
         }
 
-        revalidationService.revalidateProduct(product.getSlug());
-        return mapToDetail(productRepository.save(product));
+        Product saved = productRepository.save(product);
+
+        // --- AUDIT LOG ---
+        auditLogService.log("Product", id, "UPDATE",
+                Map.of("oldSlug", oldSlug, "newSlug", saved.getSlug()));
+
+        revalidationService.revalidateProduct(saved.getSlug());
+        return mapToDetail(saved);
     }
 
-@Caching(evict = {
+    @Caching(evict = {
         @CacheEvict(value = "products", allEntries = true),
         @CacheEvict(value = "products-root", allEntries = true),
         @CacheEvict(value = "products-children", allEntries = true),
@@ -189,6 +204,11 @@ public class ProductService {
 
         translationRepository.save(translation);
 
+        // --- AUDIT LOG ---
+        String action = (status == ContentStatus.PUBLISHED) ? "PUBLISH" : "UPDATE";
+        auditLogService.log("Product", productId, action,
+                Map.of("languageCode", language.getCode(), "status", status.name()));
+
         ProductDetailResponse result = mapToDetail(
                 productRepository.findByIdWithTranslations(productId).orElseThrow());
         revalidationService.revalidateProduct(product.getSlug());
@@ -209,6 +229,10 @@ public class ProductService {
         if (!product.getChildren().isEmpty()) {
             throw new IllegalStateException("Alt ürünleri olan bir ürün silinemez.");
         }
+
+        // --- AUDIT LOG ---
+        auditLogService.log("Product", id, "DELETE",
+                Map.of("slug", product.getSlug()));
 
         productRepository.delete(product);
     }

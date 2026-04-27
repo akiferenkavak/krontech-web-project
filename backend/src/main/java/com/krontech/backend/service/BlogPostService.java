@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -32,6 +33,7 @@ public class BlogPostService {
     private final MediaRepository mediaRepository;
     private final UserRepository userRepository;
     private final RevalidationService revalidationService;
+    private final AuditLogService auditLogService;   // YENİ
 
     @Cacheable(value = "blog-posts", key = "#langCode + '-' + #page + '-' + #size")
     @Transactional(readOnly = true)
@@ -138,6 +140,11 @@ public class BlogPostService {
         }
 
         BlogPost saved = blogPostRepository.save(post);
+
+        // --- AUDIT LOG ---
+        auditLogService.log("BlogPost", saved.getId(), "CREATE",
+                Map.of("slug", saved.getSlug()));
+
         return mapToDetail(blogPostRepository.findByIdWithDetails(saved.getId()).orElseThrow());
     }
 
@@ -169,6 +176,7 @@ public class BlogPostService {
             throw new IllegalArgumentException("Bu slug zaten kullanımda: " + request.slug());
         }
 
+        String oldSlug = post.getSlug();
         post.setSlug(request.slug());
 
         if (request.authorId() != null) {
@@ -188,6 +196,11 @@ public class BlogPostService {
         }
 
         blogPostRepository.save(post);
+
+        // --- AUDIT LOG ---
+        auditLogService.log("BlogPost", id, "UPDATE",
+                Map.of("oldSlug", oldSlug, "newSlug", post.getSlug()));
+
         revalidationService.revalidateBlog(post.getSlug());
         return mapToDetail(blogPostRepository.findByIdWithDetails(id).orElseThrow());
     }
@@ -204,6 +217,10 @@ public class BlogPostService {
         BlogPost post = blogPostRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Blog yazısı bulunamadı! ID: " + id));
         blogPostRepository.delete(post);
+
+        // --- AUDIT LOG ---
+        auditLogService.log("BlogPost", id, "DELETE",
+                Map.of("slug", post.getSlug()));
     }
 
     @Caching(evict = {
@@ -243,6 +260,12 @@ public class BlogPostService {
         }
 
         translationRepository.save(translation);
+
+        // --- AUDIT LOG ---
+        String action = (status == ContentStatus.PUBLISHED) ? "PUBLISH" : "UPDATE";
+        auditLogService.log("BlogPost", postId, action,
+                Map.of("languageCode", language.getCode(), "status", status.name()));
+
         revalidationService.revalidateBlog(
             blogPostRepository.findById(postId).orElseThrow().getSlug()
         );
