@@ -9,6 +9,22 @@ import ImageExt from '@tiptap/extension-image';
 
 const API = 'http://localhost:8080/api/v1';
 
+interface VersionEntry {
+  id: string;
+  action: string;
+  newValue: Record<string, unknown> | null;
+  oldValue: Record<string, unknown> | null;
+  createdAt: string;
+  user: { email: string } | null;
+}
+
+const ACTION_COLORS: Record<string, { bg: string; color: string }> = {
+  CREATE:  { bg: '#EAF3DE', color: '#3B6D11' },
+  UPDATE:  { bg: '#FAEEDA', color: '#854F0B' },
+  DELETE:  { bg: '#FCEBEB', color: '#A32D2D' },
+  PUBLISH: { bg: '#E6F1FB', color: '#185FA5' },
+};
+
 interface Language { id: string; code: string; name: string; }
 interface Translation {
   id: string; languageCode: string; title: string; shortDescription: string;
@@ -65,6 +81,118 @@ function RichEditor({ value, onChange }: { value: string; onChange: (v: string) 
   );
 }
 
+
+function VersionHistoryModal({
+  postId,
+  onClose,
+}: {
+  postId: string;
+  onClose: () => void;
+}) {
+  const [versions, setVersions] = useState<VersionEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`${API}/admin/versions/Product/${postId}`, { credentials: 'include' })  // ← Product
+      .then((r) => r.json())
+      .then(setVersions)
+      .catch(() => setVersions([]))
+      .finally(() => setLoading(false));
+  }, [postId]);
+
+  return (
+    <div
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9999,
+        background: 'rgba(0,0,0,0.4)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '24px',
+      }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div style={{
+        background: 'white', width: '100%', maxWidth: '580px',
+        maxHeight: '80vh', display: 'flex', flexDirection: 'column',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
+      }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '16px 20px', borderBottom: '1px solid #e5e7eb',
+        }}>
+          <p style={{ fontSize: '14px', fontWeight: 700, color: '#111827', margin: 0 }}>
+            Version History
+          </p>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
+          {loading ? (
+            <p style={{ padding: '24px', color: '#9ca3af', fontSize: '14px', textAlign: 'center' }}>Loading...</p>
+          ) : versions.length === 0 ? (
+            <p style={{ padding: '24px', color: '#9ca3af', fontSize: '14px', textAlign: 'center' }}>No history yet.</p>
+          ) : (
+            versions.map((v) => {
+              const cfg = ACTION_COLORS[v.action] ?? { bg: '#f3f4f6', color: '#374151' };
+              const isOpen = expanded === v.id;
+              return (
+                <div key={v.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                  <div
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '12px',
+                      padding: '12px 20px', cursor: 'pointer',
+                    }}
+                    onClick={() => setExpanded(isOpen ? null : v.id)}
+                  >
+                    <span style={{
+                      fontSize: '11px', fontWeight: 700, padding: '2px 8px',
+                      background: cfg.bg, color: cfg.color, whiteSpace: 'nowrap',
+                    }}>
+                      {v.action}
+                    </span>
+                    <span style={{ fontSize: '12px', color: '#6b7280', flex: 1 }}>
+                      {v.user?.email ?? 'system'}
+                    </span>
+                    <span style={{ fontSize: '12px', color: '#9ca3af', whiteSpace: 'nowrap' }}>
+                      {new Date(v.createdAt).toLocaleString('tr-TR', {
+                        day: '2-digit', month: 'short', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit',
+                      })}
+                    </span>
+                    <svg
+                      width="14" height="14" viewBox="0 0 24 24" fill="none"
+                      stroke="#9ca3af" strokeWidth={2}
+                      style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', flexShrink: 0 }}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+
+                  {isOpen && (v.newValue || v.oldValue) && (
+                    <div style={{ padding: '0 20px 12px', background: '#f9fafb' }}>
+                      <pre style={{
+                        fontSize: '11px', color: '#374151', margin: 0,
+                        padding: '10px', background: 'white', border: '1px solid #e5e7eb',
+                        overflowX: 'auto', lineHeight: 1.6, fontFamily: 'monospace',
+                      }}>
+                        {JSON.stringify(v.newValue ?? v.oldValue, null, 2)}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminProductEditPage() {
   const params = useParams();
   const router = useRouter();
@@ -81,6 +209,7 @@ export default function AdminProductEditPage() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saveError, setSaveError] = useState('');
+  const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => {
     fetch(`${API}/languages`, { credentials: 'include' })
@@ -166,6 +295,31 @@ export default function AdminProductEditPage() {
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           {saveError && <span style={{ fontSize: '12px', color: '#dc2626', maxWidth: '300px' }}>{saveError}</span>}
 
+
+        {/* History butonu */}
+        {slug && (
+          <button
+            onClick={() => setShowHistory(true)}
+            style={{
+              padding: '9px 14px',
+              border: '1px solid #e5e7eb',
+              background: 'white',
+              fontSize: '12px',
+              color: '#6b7280',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M3 3v5h5" />
+              <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8" />
+              <path d="M12 7v5l4 2" />
+            </svg>
+            History
+          </button>
+        )}
           {slug && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
               <div style={{ display: 'flex', gap: '4px' }}>
@@ -329,6 +483,14 @@ export default function AdminProductEditPage() {
           </a>
         </div>
       </div>
+
+            {/* Version History Modal */}
+      {showHistory && (
+        <VersionHistoryModal
+          postId={id}
+          onClose={() => setShowHistory(false)}
+        />
+      )}
     </div>
   );
 }
