@@ -40,6 +40,7 @@ public class ProductService {
                 .toList();
     }
 
+
     @Cacheable(value = "products-root", key = "#langCode")
     @Transactional(readOnly = true)
     public List<ProductSummaryResponse> getRootProducts(String langCode) {
@@ -61,6 +62,7 @@ public class ProductService {
                 .toList();
     }
 
+    // PUBLIC — sadece PUBLISHED içerik
     @Cacheable(value = "product-detail", key = "#id")
     @Transactional(readOnly = true)
     public ProductDetailResponse getProductById(UUID id) {
@@ -69,12 +71,30 @@ public class ProductService {
         return mapToDetail(product);
     }
 
+    // PUBLIC — sadece PUBLISHED içerik
     @Cacheable(value = "product-slug", key = "#slug")
     @Transactional(readOnly = true)
     public ProductDetailResponse getProductBySlug(String slug) {
         Product product = productRepository.findBySlugWithTranslations(slug)
                 .orElseThrow(() -> new ResourceNotFoundException("Ürün bulunamadı! Slug: " + slug));
         return mapToDetail(product);
+    }
+
+        // ADMIN — tüm statuslar, cache yok
+    @Transactional(readOnly = true)
+    public ProductDetailResponse getProductByIdForAdmin(UUID id) {
+        Product product = productRepository.findByIdWithTranslationsForAdmin(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ürün bulunamadı! ID: " + id));
+        return mapToDetail(product);
+    }
+ 
+    // ADMIN LIST — tüm ürünler
+    @Transactional(readOnly = true)
+    public List<ProductDetailResponse> getAllProductsForAdmin() {
+        return productRepository.findAllWithDetailsForAdmin()
+                .stream()
+                .map(this::mapToDetail)
+                .toList();
     }
 
     @Transactional
@@ -210,7 +230,7 @@ public class ProductService {
                 Map.of("languageCode", language.getCode(), "status", status.name()));
 
         ProductDetailResponse result = mapToDetail(
-                productRepository.findByIdWithTranslations(productId).orElseThrow());
+                productRepository.findByIdWithTranslationsForAdmin(productId).orElseThrow());
         revalidationService.revalidateProduct(product.getSlug());
         return result;
     }

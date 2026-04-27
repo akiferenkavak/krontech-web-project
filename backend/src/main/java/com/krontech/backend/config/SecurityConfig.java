@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
 
                 // --- PUBLIC: Frontend'in tükettiği GET endpoint'leri ---
+                .requestMatchers(HttpMethod.GET, "/api/v1/products/detail/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/blog-posts/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/languages/**").permitAll()

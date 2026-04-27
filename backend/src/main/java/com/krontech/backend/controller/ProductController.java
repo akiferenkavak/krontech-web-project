@@ -28,6 +28,18 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts(lang));
     }
 
+
+    // Admin — tüm ürünler, tüm statuslar
+    @GetMapping("/admin-list")
+    public ResponseEntity<List<ProductDetailResponse>> getAllProductsForAdmin() {
+        return ResponseEntity.ok(productService.getAllProductsForAdmin());
+    }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<ProductDetailResponse> getProductByIdForAdmin(@PathVariable UUID id) {
+        return ResponseEntity.ok(productService.getProductByIdForAdmin(id));
+    }
+
     // Sadece üst seviye kategoriler
     @GetMapping("/roots")
     public ResponseEntity<List<ProductSummaryResponse>> getRootProducts(

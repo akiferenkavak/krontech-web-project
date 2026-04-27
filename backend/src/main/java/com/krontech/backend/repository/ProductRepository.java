@@ -17,22 +17,72 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     boolean existsBySlug(String slug);
 
-    // Sadece aktif, üst seviye ürünleri (kategori) getir
     List<Product> findByParentIsNullAndIsActiveTrue();
 
-    // Belirli bir kategorinin aktif alt ürünlerini getir
     List<Product> findByParentIdAndIsActiveTrue(UUID parentId);
 
-    // Kategori bazlı aktif ürünler
     List<Product> findByCategoryAndIsActiveTrue(String category);
 
-    // Belirli bir ürünün tüm translation'larıyla birlikte getirilmesi (N+1 önleme)
-    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.translations t LEFT JOIN FETCH t.language WHERE p.slug = :slug")
+    // --- PUBLIC: sadece en az bir PUBLISHED translation'ı olan ürünleri döndürür ---
+    @Query("""
+        SELECT p FROM Product p
+        LEFT JOIN FETCH p.translations t
+        LEFT JOIN FETCH t.language
+        WHERE p.slug = :slug
+        AND EXISTS (
+            SELECT 1 FROM ProductTranslation pt
+            WHERE pt.product = p
+            AND pt.status = com.krontech.backend.entity.ContentStatus.PUBLISHED
+        )
+        """)
     Optional<Product> findBySlugWithTranslations(@Param("slug") String slug);
 
-    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.translations t LEFT JOIN FETCH t.language WHERE p.id = :id")
+    // --- PUBLIC: ID ile, sadece PUBLISHED translation'ı olanlar ---
+    @Query("""
+        SELECT p FROM Product p
+        LEFT JOIN FETCH p.translations t
+        LEFT JOIN FETCH t.language
+        WHERE p.id = :id
+        AND EXISTS (
+            SELECT 1 FROM ProductTranslation pt
+            WHERE pt.product = p
+            AND pt.status = com.krontech.backend.entity.ContentStatus.PUBLISHED
+        )
+        """)
     Optional<Product> findByIdWithTranslations(@Param("id") UUID id);
 
-    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.translations t LEFT JOIN FETCH t.language")
+    // --- ADMIN: status filtresi yok — tüm translation'lar gelir ---
+    @Query("""
+        SELECT p FROM Product p
+        LEFT JOIN FETCH p.translations t
+        LEFT JOIN FETCH t.language
+        WHERE p.slug = :slug
+        """)
+    Optional<Product> findBySlugWithTranslationsForAdmin(@Param("slug") String slug);
+
+    @Query("""
+        SELECT p FROM Product p
+        LEFT JOIN FETCH p.translations t
+        LEFT JOIN FETCH t.language
+        WHERE p.id = :id
+        """)
+    Optional<Product> findByIdWithTranslationsForAdmin(@Param("id") UUID id);
+
+    // --- ADMIN LIST: tüm ürünler, tüm statuslar ---
+    @Query("""
+        SELECT DISTINCT p FROM Product p
+        LEFT JOIN FETCH p.translations t
+        LEFT JOIN FETCH t.language
+        LEFT JOIN FETCH p.featuredImage
+        LEFT JOIN FETCH p.parent
+        ORDER BY p.createdAt DESC
+        """)
+    List<Product> findAllWithDetailsForAdmin();
+
+    @Query("""
+        SELECT p FROM Product p
+        LEFT JOIN FETCH p.translations t
+        LEFT JOIN FETCH t.language
+        """)
     List<Product> findAllWithTranslations();
 }
