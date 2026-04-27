@@ -139,6 +139,54 @@ export default async function ProductLayout({
       ? JSON.parse(translation.structuredData)
       : {}),
   };
+
+  // ── GEO: FAQPage JSON-LD ───────────────────────────────────────────────────
+  const faqLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: isTr ? `${title} nedir?` : `What is ${title}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: shortDesc || (isTr
+            ? `${title}, Kron Technologies tarafından geliştirilen kurumsal güvenlik çözümüdür.`
+            : `${title} is an enterprise security solution developed by Kron Technologies.`),
+        },
+      },
+      {
+        '@type': 'Question',
+        name: isTr ? `${title} nasıl çalışır?` : `How does ${title} work?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: isTr
+            ? `${title}, kurumsal altyapınızı korumak için gelişmiş güvenlik mekanizmaları kullanır. Detaylı bilgi için "Nasıl Çalışır?" sekmesini inceleyebilirsiniz.`
+            : `${title} uses advanced security mechanisms to protect your enterprise infrastructure. See the "How It Works" tab for details.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: isTr ? `${title} için demo talep edebilir miyim?` : `Can I request a demo for ${title}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: isTr
+            ? `Evet, Kron Technologies üzerinden demo talebinde bulunabilirsiniz. Demo Talep Et butonuna tıklayarak formu doldurabilirsiniz.`
+            : `Yes, you can request a demo through Kron Technologies. Click the "Request a Demo" button to fill out the form.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: isTr ? `${title} hangi uyumluluk standartlarını destekliyor?` : `What compliance standards does ${title} support?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: isTr
+            ? `${title}, ISO 27001, KVKK, PCI DSS, SOX, HIPAA ve GDPR gibi uluslararası uyumluluk standartlarını desteklemektedir.`
+            : `${title} supports international compliance standards including ISO 27001, KVKK, PCI DSS, SOX, HIPAA, and GDPR.`,
+        },
+      },
+    ],
+  };
   // ──────────────────────────────────────────────────────────────────────────
 
   const tabs = [
@@ -161,10 +209,16 @@ export default async function ProductLayout({
 
   return (
     <>
-      {/* GEO: JSON-LD structured data */}
+      {/* GEO: SoftwareApplication JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      {/* GEO: FAQPage JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
       {/* ===== BANNER ===== */}

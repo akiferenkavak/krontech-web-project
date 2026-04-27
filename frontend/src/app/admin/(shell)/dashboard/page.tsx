@@ -16,7 +16,7 @@ export default function AdminDashboardPage() {
       try {
         const [products, blogPosts, resources] = await Promise.allSettled([
           fetch('http://localhost:8080/api/v1/products?lang=en', { credentials: 'include' }).then((r) => r.json()),
-          fetch('http://localhost:8080/api/v1/blog-posts?lang=en', { credentials: 'include' }).then((r) => r.json()),
+          fetch('http://localhost:8080/api/v1/blog-posts/admin-list', { credentials: 'include' }).then((r) => r.json()),
           fetch('http://localhost:8080/api/v1/resources?lang=en', { credentials: 'include' }).then((r) => r.json()),
         ]);
         setStats({
