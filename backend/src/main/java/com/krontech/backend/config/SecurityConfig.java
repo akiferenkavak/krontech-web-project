@@ -59,6 +59,10 @@ public class SecurityConfig {
                 // --- PUBLIC: Form submit ---
                 .requestMatchers(HttpMethod.POST, "/api/v1/forms/submit").permitAll()
 
+                // --- PUBLIC: Redirect listesi (proxy.ts runtime kontrolü için) ---
+                .requestMatchers(HttpMethod.GET, "/api/v1/admin/redirects").permitAll()
+
+
                 // --- ADMIN: Tüm /admin/** path'leri ADMIN rolü gerektirir ---
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
 
